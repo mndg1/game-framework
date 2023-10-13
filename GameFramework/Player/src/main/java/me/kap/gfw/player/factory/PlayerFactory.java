@@ -1,5 +1,6 @@
-package me.kap.gfw.player;
+package me.kap.gfw.player.factory;
 
+import me.kap.gfw.player.GamePlayer;
 import org.bukkit.entity.Player;
 
 /**
