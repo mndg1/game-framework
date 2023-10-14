@@ -47,7 +47,7 @@ public class GameComponentManager {
      * @param component The {@link GameComponent} to add.
      */
     public void addComponent(GameComponent component) {
-        if (getComponent(component.getClass()) != null) {
+        if (components.containsKey(component.getClass())) {
             return;
         }
 
