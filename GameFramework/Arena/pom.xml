@@ -10,25 +10,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>me.kap.gfw.game</groupId>
-    <artifactId>Game</artifactId>
+    <groupId>me.kap.gfw.arena</groupId>
+    <artifactId>Arena</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Game</name>
-
-    <dependencies>
-        <dependency>
-            <groupId>me.kap.gfw.player</groupId>
-            <artifactId>Player</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>me.kap.gfw.arena</groupId>
-            <artifactId>Arena</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
+    <name>Arena</name>
 
     <build>
         <plugins>
@@ -42,4 +28,20 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
