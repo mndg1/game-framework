@@ -1,18 +1,62 @@
 package me.kap.gfw.game;
 
 /**
- * A class implementing the very basic logic of a Game as defined in {@link GameBase}.
- * This class can be extended to create custom {@link Game} implementations.
+ * A local contract describing which methods each {@link Game} implementation has.
  */
-public abstract class Game extends GameBase {
+public abstract class Game {
+    private final GameComponentManager componentManager = new GameComponentManager();
+    private String gameName;
 
-    @Override
+    protected Game(String gameName) {
+        this.gameName = gameName;
+    }
+
+    /**
+     * Attempts to start the game.
+     */
     public void start() {
+        if (!componentManager.start()){
+            return;
+        }
+
         setup();
     }
 
-    @Override
+    /**
+     * Attempts to end the game.
+     */
     public void end() {
+        if (!componentManager.end()) {
+            return;
+        }
+
         finish();
+    }
+
+    /**
+     * Executed at the start of a game. Used for implementing custom starting logic.
+     */
+    protected abstract void setup();
+
+    /**
+     * Executed at each game tick. Used for implementing repeating logic.
+     */
+    protected abstract void update();
+
+    /**
+     * Executed at the end of a game. Used for implementing custom ending logic.
+     */
+    protected abstract void finish();
+
+    public GameComponentManager getComponentManager() {
+        return componentManager;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
     }
 }
