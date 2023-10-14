@@ -26,8 +26,8 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Test with Maven
-      run: mvn test
+    - name: Build
+      run: mvn -B package --file pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
