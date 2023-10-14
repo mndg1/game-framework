@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * A registry of all the {@link PlayerFactory} implementations.
  */
-public final class FactoryRegistry {
+public final class PlayerFactoryRegistry {
     private final Map<Class<? extends GamePlayer>, PlayerFactory<? extends GamePlayer>> factories = new HashMap<>();
 
     /**
@@ -31,7 +31,7 @@ public final class FactoryRegistry {
      * @return A {@link PlayerFactory} if one is registered with the given {@link GamePlayer} type.
      */
     @SuppressWarnings("unchecked")
-    public <T extends GamePlayer> PlayerFactory<T> getFactory(Class<T> gamePlayerClass) {
+    public <T extends GamePlayer> PlayerFactory<T> resolveFactory(Class<T> gamePlayerClass) {
         if (!factories.containsKey(gamePlayerClass)) {
             String errorMessage = String.format("No factory was registered for %s", gamePlayerClass.getTypeName());
             throw new NoPlayerFactoryForTypeException(errorMessage);

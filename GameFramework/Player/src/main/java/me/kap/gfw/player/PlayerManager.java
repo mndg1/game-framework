@@ -1,7 +1,7 @@
 package me.kap.gfw.player;
 
 import me.kap.gfw.player.exceptions.InvalidPlayerFactoryException;
-import me.kap.gfw.player.factory.FactoryRegistry;
+import me.kap.gfw.player.factory.PlayerFactoryRegistry;
 import me.kap.gfw.player.factory.PlayerFactory;
 import org.bukkit.entity.Player;
 
@@ -17,8 +17,8 @@ public class PlayerManager<T extends GamePlayer> {
     private final PlayerFactory<T> playerFactory;
     private final Map<UUID, T> players = new HashMap<>();
 
-    public PlayerManager(Class<T> gamePlayerClass, FactoryRegistry factoryRegistry) {
-        playerFactory = factoryRegistry.getFactory(gamePlayerClass);
+    public PlayerManager(Class<T> gamePlayerClass, PlayerFactoryRegistry factoryRegistry) {
+        playerFactory = factoryRegistry.resolveFactory(gamePlayerClass);
 
         if (playerFactory == null) {
             throw new InvalidPlayerFactoryException("Class has no valid PlayerFactory");
@@ -31,6 +31,10 @@ public class PlayerManager<T extends GamePlayer> {
      * @param bukkitPlayer The {@link Player} which the {@link GamePlayer} type will be based on.
      */
     public void addNewPlayer(Player bukkitPlayer) {
+        if (players.containsKey(bukkitPlayer.getUniqueId())) {
+            return;
+        }
+
         T player = playerFactory.createPlayer(bukkitPlayer);
         players.put(player.getBukkitPlayer().getUniqueId(), player);
     }
