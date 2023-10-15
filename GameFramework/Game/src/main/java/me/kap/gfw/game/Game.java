@@ -15,7 +15,7 @@ public abstract class Game {
     /**
      * Attempts to start the game.
      */
-    public void start() {
+    public final void start() {
         if (!componentManager.start()) {
             return;
         }
@@ -26,7 +26,7 @@ public abstract class Game {
     /**
      * Attempts to end the game.
      */
-    public void end() {
+    public final void end() {
         if (!componentManager.end()) {
             return;
         }
