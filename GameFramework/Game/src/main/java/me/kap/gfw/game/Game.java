@@ -1,7 +1,8 @@
 package me.kap.gfw.game;
 
 /**
- * A local contract describing which methods each {@link Game} implementation has.
+ * An abstract class defining what each {@link Game} implementation can do.
+ * It also implements some logic that is universal to each {@link Game} implementation.
  */
 public abstract class Game {
     private final GameComponentManager componentManager = new GameComponentManager();
@@ -15,7 +16,7 @@ public abstract class Game {
      * Attempts to start the game.
      */
     public void start() {
-        if (!componentManager.start()){
+        if (!componentManager.start()) {
             return;
         }
 

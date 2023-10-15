@@ -1,5 +1,7 @@
 package me.kap.gfw.game;
 
+import me.kap.gfw.game.exceptions.CannotBuildGameTypeException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +50,11 @@ public class GameBuilder<T extends Game> {
     @SuppressWarnings("java:S112")
     public T build() {
         T game;
+
+        if (gameTypeClass == Game.class) {
+            String message = String.format("Cannot build games of type %s", gameTypeClass.getTypeName());
+            throw new CannotBuildGameTypeException(message);
+        }
 
         try {
             game = gameTypeClass.getConstructor(String.class).newInstance(gameName);
