@@ -1,18 +1,36 @@
 package me.kap.gfw.game;
 
+/**
+ * An abstract class defining what each {@link Game} implementation can do.
+ * It also implements some logic that is universal to each {@link Game} implementation.
+ */
 public abstract class Game {
+    private final GameComponentManager componentManager = new GameComponentManager();
+    private String gameName;
+
+    protected Game(String gameName) {
+        this.gameName = gameName;
+    }
 
     /**
      * Attempts to start the game.
      */
-    public final void start() {
+    public void start() {
+        if (!componentManager.start()) {
+            return;
+        }
+
         setup();
     }
 
     /**
-     * Ends the game.
+     * Attempts to end the game.
      */
-    public final void end() {
+    public void end() {
+        if (!componentManager.end()) {
+            return;
+        }
+
         finish();
     }
 
@@ -30,4 +48,16 @@ public abstract class Game {
      * Executed at the end of a game. Used for implementing custom ending logic.
      */
     protected abstract void finish();
+
+    public GameComponentManager getComponentManager() {
+        return componentManager;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
+    }
 }

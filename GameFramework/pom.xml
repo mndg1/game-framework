@@ -13,6 +13,7 @@
         <module>GameFrameworkCore</module>
         <module>Game</module>
         <module>Player</module>
+        <module>Arena</module>
     </modules>
 
     <dependencies>
