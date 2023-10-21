@@ -1,7 +1,7 @@
 package me.kap.gfw.events.timing.comparators;
 
-import me.kap.gfw.events.timing.SingularTimedEventAction;
-import me.kap.gfw.events.timing.TimedEventAction;
+import me.kap.gfw.events.timing.actions.SingularTimedEventAction;
+import me.kap.gfw.events.timing.actions.TimedEventAction;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

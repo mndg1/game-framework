@@ -1,6 +1,6 @@
 package me.kap.gfw.events.timing.comparators;
 
-import me.kap.gfw.events.timing.TimedEventAction;
+import me.kap.gfw.events.timing.actions.TimedEventAction;
 
 import java.util.Comparator;
 

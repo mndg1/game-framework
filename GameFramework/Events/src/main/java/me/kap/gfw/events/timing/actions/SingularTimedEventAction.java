@@ -1,4 +1,4 @@
-package me.kap.gfw.events.timing;
+package me.kap.gfw.events.timing.actions;
 
 import me.kap.gfw.events.Action;
 
