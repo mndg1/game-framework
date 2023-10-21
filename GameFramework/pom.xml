@@ -14,6 +14,7 @@
         <module>Game</module>
         <module>Player</module>
         <module>Arena</module>
+        <module>Events</module>
     </modules>
 
     <dependencies>
