@@ -2,16 +2,21 @@ package me.kap.gfw.events.timing;
 
 import me.kap.gfw.events.Action;
 
-import java.util.Date;
+import java.time.Clock;
 
 /**
  * A subclass of {@link TimedEventAction} which is repeatedly scheduled at a given interval.
  */
 public class RepeatingTimeEventAction extends TimedEventAction {
+    private final Clock clock;
     private final int executionInterval;
 
-    protected RepeatingTimeEventAction(Action action, int nextExecutionTime, int executionInterval) {
-        super(action, nextExecutionTime);
+    public RepeatingTimeEventAction(Clock clock,
+                                    long nextExecutionTime,
+                                    int executionInterval,
+                                    Action action) {
+        super(nextExecutionTime, action);
+        this.clock = clock;
         this.executionInterval = executionInterval;
     }
 
@@ -24,9 +29,8 @@ public class RepeatingTimeEventAction extends TimedEventAction {
     /**
      * @return The epoch time value for when this action should next execute.
      */
-    public long calculateNextExecutionTime() {
-        Date now = new Date();
-        long timeNow = now.getTime();
+    private long calculateNextExecutionTime() {
+        long timeNow = clock.millis();
 
         return timeNow + getExecutionInterval();
     }

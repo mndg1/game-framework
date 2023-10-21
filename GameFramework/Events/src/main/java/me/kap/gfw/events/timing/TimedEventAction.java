@@ -3,10 +3,13 @@ package me.kap.gfw.events.timing;
 import me.kap.gfw.events.Action;
 import me.kap.gfw.events.EventAction;
 
+/**
+ * An abstract base class for scheduled {@link EventAction}s.
+ */
 public abstract class TimedEventAction extends EventAction {
     private long nextExecutionTime;
 
-    protected TimedEventAction(Action action, long nextExecutionTime) {
+    protected TimedEventAction(long nextExecutionTime, Action action) {
         super(action);
         this.nextExecutionTime = nextExecutionTime;
     }

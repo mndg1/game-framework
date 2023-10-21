@@ -7,7 +7,7 @@ import me.kap.gfw.events.Action;
  */
 public class SingularTimedEventAction extends TimedEventAction {
 
-    protected SingularTimedEventAction(Action action, long executionTime) {
-        super(action, executionTime);
+    public SingularTimedEventAction(long executionTime, Action action) {
+        super(executionTime, action);
     }
 }

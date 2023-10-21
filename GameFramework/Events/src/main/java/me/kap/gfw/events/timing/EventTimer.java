@@ -1,18 +1,29 @@
 package me.kap.gfw.events.timing;
 
+import me.kap.gfw.events.Action;
 import me.kap.gfw.events.timing.comparators.TimedEventComparator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.time.Clock;
 import java.util.*;
 
 /**
  * A class that is responsible for scheduling {@link TimedEventAction}s.
  */
 public class EventTimer {
+    private final Clock clock;
     private final Queue<TimedEventAction> actions = new PriorityQueue<>(new TimedEventComparator());
 
     private BukkitRunnable timer;
+
+    public EventTimer() {
+        this(Clock.systemUTC());
+    }
+
+    public EventTimer(Clock clock) {
+        this.clock = clock;
+    }
 
     /**
      * Starts the timer.
@@ -38,12 +49,26 @@ public class EventTimer {
     }
 
     /**
-     * Adds a {@link TimedEventAction} to the timer.
+     * Adds a {@link SingularTimedEventAction} to the timer.
      *
-     * @param action The {@link TimedEventAction} to schedule.
+     * @param executionTime The epoch time value at which to execute the action.
+     * @param action        The action which should be executed.
      */
-    public void addAction(TimedEventAction action) {
-        actions.offer(action);
+    public void scheduleSingleEvent(long executionTime, Action action) {
+        TimedEventAction eventAction = new SingularTimedEventAction(executionTime, action);
+        actions.offer(eventAction);
+    }
+
+    /**
+     * Adds a {@link RepeatingTimeEventAction} to the timer.
+     *
+     * @param nextExecutionTime The epoch time value of when the action should first be executed.
+     * @param interval          The amount of milliseconds between executions.
+     * @param action            The action which should be executed.
+     */
+    public void scheduleRepeatingEvent(long nextExecutionTime, int interval, Action action) {
+        TimedEventAction eventAction = new RepeatingTimeEventAction(clock, nextExecutionTime, interval, action);
+        actions.offer(eventAction);
     }
 
     /**
