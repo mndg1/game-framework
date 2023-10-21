@@ -5,6 +5,7 @@ import me.kap.gfw.game.exceptions.CannotBuildGameTypeException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A builder that enables building of different {@link Game} instances.
@@ -25,10 +26,10 @@ public class GameBuilder<T extends Game> {
     /**
      * Configures a {@link GameComponent} to be added to the {@link Game}.
      *
-     * @param component The {@link GameComponent} to add.
+     * @param components The {@link GameComponent}(s) to add.
      */
-    public GameBuilder<T> addComponent(GameComponent component) {
-        components.add(component);
+    public GameBuilder<T> addComponent(GameComponent... components) {
+        this.components.addAll(List.of(components));
 
         return this;
     }
