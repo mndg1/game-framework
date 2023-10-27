@@ -17,10 +17,10 @@ public class PlayerManager<T extends GamePlayer> {
     private final PlayerFactory<T> playerFactory;
     private final Map<UUID, T> players = new HashMap<>();
 
-    public PlayerManager(Class<T> gamePlayerClass, PlayerFactoryRegistry factoryRegistry) {
-        playerFactory = factoryRegistry.resolveFactory(gamePlayerClass);
+    public PlayerManager(PlayerFactory<T> playerFactory) {
+        this.playerFactory = playerFactory;
 
-        if (playerFactory == null) {
+        if (this.playerFactory == null) {
             throw new InvalidPlayerFactoryException("Class has no valid PlayerFactory");
         }
     }

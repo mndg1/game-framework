@@ -1,6 +1,5 @@
 package me.kap.gfw.player;
 
-import me.kap.gfw.player.factory.PlayerFactoryRegistry;
 import me.kap.gfw.player.factory.GamePlayerFactory;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.Test;
@@ -24,14 +23,12 @@ class PlayerManagerGamePlayerTest {
         bukkitPlayerFake = mock(Player.class);
         gamePlayerFake = mock(GamePlayer.class);
         gamePlayerFactoryFake = mock(GamePlayerFactory.class);
-        PlayerFactoryRegistry playerFactoryRegistryFake = mock(PlayerFactoryRegistry.class);
 
         when(bukkitPlayerFake.getUniqueId()).thenReturn(playerId);
         when(gamePlayerFake.getBukkitPlayer()).thenReturn(bukkitPlayerFake);
         when(gamePlayerFactoryFake.createPlayer(any(Player.class))).thenReturn(gamePlayerFake);
-        when(playerFactoryRegistryFake.resolveFactory(GamePlayer.class)).thenReturn(gamePlayerFactoryFake);
 
-        playerManager = new PlayerManager<>(GamePlayer.class, playerFactoryRegistryFake);
+        playerManager = new PlayerManager<>(gamePlayerFactoryFake);
     }
 
     @Test
