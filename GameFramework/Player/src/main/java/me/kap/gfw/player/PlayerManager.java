@@ -4,6 +4,7 @@ import me.kap.gfw.player.exceptions.InvalidPlayerFactoryException;
 import me.kap.gfw.player.factory.PlayerFactoryRegistry;
 import me.kap.gfw.player.factory.PlayerFactory;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
 
@@ -17,12 +18,8 @@ public class PlayerManager<T extends GamePlayer> {
     private final PlayerFactory<T> playerFactory;
     private final Map<UUID, T> players = new HashMap<>();
 
-    public PlayerManager(Class<T> gamePlayerClass, PlayerFactoryRegistry factoryRegistry) {
-        playerFactory = factoryRegistry.resolveFactory(gamePlayerClass);
-
-        if (playerFactory == null) {
-            throw new InvalidPlayerFactoryException("Class has no valid PlayerFactory");
-        }
+    public PlayerManager(@NonNull PlayerFactory<T> playerFactory) {
+        this.playerFactory = playerFactory;
     }
 
     /**
