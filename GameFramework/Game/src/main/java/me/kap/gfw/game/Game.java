@@ -7,12 +7,12 @@ import me.kap.gfw.player.PlayerManager;
  * An abstract class defining what each {@link Game} implementation can do.
  * It also implements some logic that is universal to each {@link Game} implementation.
  */
-public abstract class Game {
+public abstract class Game<TPlayer extends GamePlayer> {
     private final GameComponentManager componentManager = new GameComponentManager();
-    private final PlayerManager<? extends GamePlayer> playerManager;
+    private final PlayerManager<TPlayer> playerManager;
     private String gameName;
 
-    protected Game(String gameName, PlayerManager<? extends GamePlayer> playerManager) {
+    protected Game(String gameName, PlayerManager<TPlayer> playerManager) {
         this.gameName = gameName;
         this.playerManager = playerManager;
     }
@@ -61,8 +61,7 @@ public abstract class Game {
         this.gameName = gameName;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends GamePlayer> PlayerManager<T> getPlayerManager() {
-        return (PlayerManager<T>) playerManager;
+    public PlayerManager<TPlayer> getPlayerManager() {
+        return playerManager;
     }
 }
