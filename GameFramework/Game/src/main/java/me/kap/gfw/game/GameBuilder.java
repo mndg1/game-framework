@@ -18,13 +18,11 @@ import java.util.List;
 public class GameBuilder<T extends Game> {
     private final Class<T> gameTypeClass;
     private final Collection<GameComponent> components = new ArrayList<>();
-    private PlayerManager<? extends GamePlayer> playerManager;
     private String gameName;
 
     public GameBuilder(Class<T> gameTypeClass) {
         this.gameTypeClass = gameTypeClass;
 
-        playerManager = new PlayerManager<>(new GamePlayerFactory());
         gameName = "New Game";
     }
 
@@ -50,12 +48,6 @@ public class GameBuilder<T extends Game> {
         return this;
     }
 
-    public GameBuilder<T> setPlayerManager(PlayerManager<? extends GamePlayer> playerManager) {
-        this.playerManager = playerManager;
-
-        return this;
-    }
-
     /**
      * @return An {@link Game} containing all configured properties.
      */
@@ -69,7 +61,7 @@ public class GameBuilder<T extends Game> {
         }
 
         try {
-            game = gameTypeClass.getConstructor(String.class, PlayerManager.class).newInstance(gameName, playerManager);
+            game = gameTypeClass.getConstructor(String.class).newInstance(gameName);
         } catch (InstantiationException |
                  IllegalAccessException |
                  InvocationTargetException |
