@@ -49,10 +49,11 @@ public class ArenaComponent extends GameComponent {
     // Code omitted.
 }
 ```
-Recall how `Game.start()` calls the game's components' `start()` method? If the game made use of an `ArenaComponent` which did not have all the required locations set, the game would fail to start. It would only be able to start when all the components are in the correct state and return `true` for their start method. The same goes for the `end()` method, of course.
 
-### The ComponentManager
-TOOOOOOOOOOOOOOOOOOO DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+### The GameComponentManager
+The actual managing of components is done by a `GameComponentManager`. Each `Game` has its own `GameComponenentManager` instance. The `GameComponentManager` can be used to register and lookup `GameComponent` instances that it holds.
+
+The `ComponenentManager` also has a `start()` and an `end()` method. these methods call the `start()` and `end()` methods for every `GameComponent` that is registered to the `GameComponentManager`. The `start()` and `end()` methods return a `boolean` which tells the `Game` whether all of its components completed the operation successfully. If the operation failed for any of the registered components, the `Game` will not start/finish.
 
 ### Creating custom components
 To create your own component, simple create a class which extends the `GameComponent` class.
@@ -83,4 +84,24 @@ public class ExampleComponent extends GameComponent {
         return scoreManager.getTopPlayer().equals("TheKap27");
     }
 }
+```
+
+### Creating instances of games
+The framework provides a `GameBuilder` which intends to ease the process of creating instances of any sub type of `Game`. \
+The `GameBuilder` provides the following methods for configuring game instances:
+* The `addComponents` method which takes a variable amount of `GameComponent` as parameters.
+* The `setGameName` method which takes a `String` as its parameter.
+```java
+// Create and configure the builder
+GameBuilder<ExampleGame> builder = new GameBuilder<>(ExampleGame.class)
+    .addComponents(
+        new ExampleComponent(), 
+        new ArenaComponent(), 
+        new TimerComponent())
+    .setGameName("Example Game");
+```
+After configuring the `GameBuilder` to your liking, you can use the `GameBuilder.build()` method to create an instance of the game.
+```java
+// Using the previously configured builder to create game instances
+ExampleGame game = builder.build();
 ```
