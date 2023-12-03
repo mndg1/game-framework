@@ -13,7 +13,7 @@ class GameBuilderTest {
         // arrange
         GameComponent componentFake = mock(GameComponent.class);
         GameBuilder<GameFake> builder = new GameBuilder<>(GameFake.class)
-                .addComponent(componentFake);
+                .addComponents(componentFake);
 
         // act
         Game game = builder.build();

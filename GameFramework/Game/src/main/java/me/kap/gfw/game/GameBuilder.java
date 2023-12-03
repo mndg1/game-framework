@@ -1,9 +1,6 @@
 package me.kap.gfw.game;
 
 import me.kap.gfw.game.exceptions.CannotBuildGameTypeException;
-import me.kap.gfw.player.GamePlayer;
-import me.kap.gfw.player.PlayerManager;
-import me.kap.gfw.player.factory.GamePlayerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class GameBuilder<T extends Game> {
      *
      * @param components The {@link GameComponent}(s) to add.
      */
-    public GameBuilder<T> addComponent(GameComponent... components) {
+    public GameBuilder<T> addComponents(GameComponent... components) {
         this.components.addAll(List.of(components));
 
         return this;
