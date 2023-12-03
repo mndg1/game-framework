@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>GameFrameworkCore</module>
         <module>Game</module>
         <module>Player</module>
         <module>Arena</module>

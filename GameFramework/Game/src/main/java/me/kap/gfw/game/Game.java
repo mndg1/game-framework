@@ -1,20 +1,15 @@
 package me.kap.gfw.game;
 
-import me.kap.gfw.player.GamePlayer;
-import me.kap.gfw.player.PlayerManager;
-
 /**
  * An abstract class defining what each {@link Game} implementation can do.
  * It also implements some logic that is universal to each {@link Game} implementation.
  */
 public abstract class Game {
     private final GameComponentManager componentManager = new GameComponentManager();
-    private final PlayerManager<? extends GamePlayer> playerManager;
     private String gameName;
 
-    protected Game(String gameName, PlayerManager<? extends GamePlayer> playerManager) {
+    protected Game(String gameName) {
         this.gameName = gameName;
-        this.playerManager = playerManager;
     }
 
     /**
@@ -45,11 +40,6 @@ public abstract class Game {
     protected abstract void setup();
 
     /**
-     * Executed at each game tick. Used for implementing repeating logic.
-     */
-    protected abstract void update();
-
-    /**
      * Executed at the end of a game. Used for implementing custom ending logic.
      */
     protected abstract void finish();
@@ -64,10 +54,5 @@ public abstract class Game {
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends GamePlayer> PlayerManager<T> getPlayerManager() {
-        return (PlayerManager<T>) playerManager;
     }
 }

@@ -1,9 +1,6 @@
 package me.kap.gfw.game;
 
 import me.kap.gfw.game.exceptions.CannotBuildGameTypeException;
-import me.kap.gfw.player.GamePlayer;
-import me.kap.gfw.player.PlayerManager;
-import me.kap.gfw.player.factory.GamePlayerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -18,13 +15,11 @@ import java.util.List;
 public class GameBuilder<T extends Game> {
     private final Class<T> gameTypeClass;
     private final Collection<GameComponent> components = new ArrayList<>();
-    private PlayerManager<? extends GamePlayer> playerManager;
     private String gameName;
 
     public GameBuilder(Class<T> gameTypeClass) {
         this.gameTypeClass = gameTypeClass;
 
-        playerManager = new PlayerManager<>(new GamePlayerFactory());
         gameName = "New Game";
     }
 
@@ -33,7 +28,7 @@ public class GameBuilder<T extends Game> {
      *
      * @param components The {@link GameComponent}(s) to add.
      */
-    public GameBuilder<T> addComponent(GameComponent... components) {
+    public GameBuilder<T> addComponents(GameComponent... components) {
         this.components.addAll(List.of(components));
 
         return this;
@@ -46,12 +41,6 @@ public class GameBuilder<T extends Game> {
      */
     public GameBuilder<T> setGameName(String gameName) {
         this.gameName = gameName;
-
-        return this;
-    }
-
-    public GameBuilder<T> setPlayerManager(PlayerManager<? extends GamePlayer> playerManager) {
-        this.playerManager = playerManager;
 
         return this;
     }
@@ -69,7 +58,7 @@ public class GameBuilder<T extends Game> {
         }
 
         try {
-            game = gameTypeClass.getConstructor(String.class, PlayerManager.class).newInstance(gameName, playerManager);
+            game = gameTypeClass.getConstructor(String.class).newInstance(gameName);
         } catch (InstantiationException |
                  IllegalAccessException |
                  InvocationTargetException |
