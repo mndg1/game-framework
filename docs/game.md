@@ -15,6 +15,11 @@ In order to start creating a custom game, you can create a class which inherits 
 ```java
 public class ExampleGame extends Game {
 
+    // Make sure that the constructor is public if you want to make use of the GameBuilder.
+    public ExampleGame(String gameName) {
+        super(gameName);
+    }
+
     @Override
     protected void setup() {
         // This method is called by 'Game.start()'.
@@ -30,7 +35,7 @@ public class ExampleGame extends Game {
 ```
 
 ## Game Components
-Some logic is useful to certain games, while being useless to other games. Components are used to prevent having to rewrite reusable logic for each game that wants to use it. A component is a class that extends the abstract `GameComponent` class. This class defines two methods: `start()` and `end()`. Both of these methods return a `boolean` which states whether the operation was successful. The `GameComponent` class already implements these methods to simple return `true`, however, these methods can be overridden in sub classes so to execute mpre sophisticated logic. An example would be the `ArenaComponent` which checks whether all the required locations are set:
+Some logic is useful to certain games, while being useless to other games. Components are used to prevent having to rewrite reusable logic for each game that wants to use it. A component is a class that extends the abstract `GameComponent` class. This class defines two methods: `start()` and `end()`. Both of these methods return a `boolean` which states whether the operation was successful. The `GameComponent` class already implements these methods to simple return `true`, however, these methods can be overridden in sub classes so to execute more sophisticated logic. An example would be the `ArenaComponent` which checks whether all the required locations are set.
 ```java
 public class ArenaComponent extends GameComponent {
 
@@ -105,3 +110,4 @@ After configuring the `GameBuilder` to your liking, you can use the `GameBuilder
 // Using the previously configured builder to create game instances
 ExampleGame game = builder.build();
 ```
+Note: The `GameBuilder` will only work with constructors that are public and match the `Game` constructor: `Game(String gameName)`.
