@@ -1,0 +1,4 @@
+name: TagExample
+version: '${project.version}'
+main: me.kap.gfw.tagexample.TagExample
+api-version: '1.20'
