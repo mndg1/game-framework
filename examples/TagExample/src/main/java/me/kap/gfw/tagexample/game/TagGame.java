@@ -1,5 +1,8 @@
 package me.kap.gfw.tagexample.game;
 
+import me.kap.gfw.arena.Arena;
+import me.kap.gfw.arena.ArenaComponent;
+import me.kap.gfw.arena.ArenaLocation;
 import me.kap.gfw.events.timing.TimerComponent;
 import me.kap.gfw.game.Game;
 import me.kap.gfw.player.PlayerManager;
@@ -11,7 +14,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
-import java.util.Collection;
 import java.util.Date;
 
 public class TagGame extends Game {
@@ -35,6 +37,11 @@ public class TagGame extends Game {
             // Display the role to the player.
             player.sendRoleStatusNotification();
         }
+
+        // Teleport players to the arena.
+        ArenaComponent arenaComponent = getComponentManager().getComponent(ArenaComponent.class);
+        LocationManager locationManager = new LocationManager(arenaComponent.getArena());
+        locationManager.teleportPlayersToArena(playerManager.getAllPlayers());
     }
 
     @Override
@@ -61,12 +68,13 @@ public class TagGame extends Game {
 
         // Grant five seconds of immunity to the tagger.
         tagger.setState(State.IMMUNE);
-        final int immunityDuration = 5_000; // TODO: configurable
+        final int immunityDuration = 5_000;
         long executionTime = new Date().getTime() + immunityDuration;
         TimerComponent timer = getComponentManager().getComponent(TimerComponent.class);
 
         // Schedule the end of the immunity.
         timer.getEventTimer().scheduleSingleEvent(executionTime, () ->  {
+            // Update state
             tagger.setState(State.VULNERABLE);
 
             // Send a message to all players that immunity has ended.

@@ -8,3 +8,5 @@ commands:
     description: 'starts the game'
   end:
     description: 'ends the game'
+  setLocation:
+    description: 'sets a location'
