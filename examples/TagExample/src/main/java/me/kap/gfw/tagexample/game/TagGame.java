@@ -1,8 +1,6 @@
 package me.kap.gfw.tagexample.game;
 
-import me.kap.gfw.arena.Arena;
 import me.kap.gfw.arena.ArenaComponent;
-import me.kap.gfw.arena.ArenaLocation;
 import me.kap.gfw.events.timing.TimerComponent;
 import me.kap.gfw.game.Game;
 import me.kap.gfw.player.PlayerManager;
