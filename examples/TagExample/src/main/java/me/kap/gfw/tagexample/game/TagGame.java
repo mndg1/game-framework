@@ -13,6 +13,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class TagGame extends Game {
     private final PlayerManager<TagPlayer> playerManager = new PlayerManager<>(new TagPlayerFactory());
@@ -40,6 +41,11 @@ public class TagGame extends Game {
         ArenaComponent arenaComponent = getComponentManager().getComponent(ArenaComponent.class);
         LocationManager locationManager = new LocationManager(arenaComponent.getArena());
         locationManager.teleportPlayersToArena(playerManager.getAllPlayers());
+
+        // Schedule the game to end after five minutes.
+        long endTime = new Date().getTime() + TimeUnit.MINUTES.toMillis(5);
+        TimerComponent timerComponent = getComponentManager().getComponent(TimerComponent.class);
+        timerComponent.getEventTimer().scheduleSingleEvent(endTime, this::end);
     }
 
     @Override
@@ -48,6 +54,8 @@ public class TagGame extends Game {
         for (TagPlayer player : playerManager.getAllPlayers()) {
             player.setRole(Role.UNASSIGNED);
         }
+
+        getAnnouncer().broadcast(ChatColor.BLUE + "The game has ended due to reaching the time limit");
     }
 
     public void performTag(TagPlayer tagger, TagPlayer runner) {
@@ -66,8 +74,7 @@ public class TagGame extends Game {
 
         // Grant five seconds of immunity to the tagger.
         tagger.setState(State.IMMUNE);
-        final int immunityDuration = 5_000;
-        long executionTime = new Date().getTime() + immunityDuration;
+        long executionTime = new Date().getTime() + TimeUnit.SECONDS.toMillis(5);
         TimerComponent timer = getComponentManager().getComponent(TimerComponent.class);
 
         // Schedule the end of the immunity.
