@@ -25,4 +25,8 @@ public class TimerComponent extends GameComponent {
         eventTimer.stopTimer();
         return true;
     }
+
+    public EventTimer getEventTimer() {
+        return eventTimer;
+    }
 }
