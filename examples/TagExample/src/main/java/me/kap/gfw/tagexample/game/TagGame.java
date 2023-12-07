@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class TagGame extends Game {
     private final PlayerManager<TagPlayer> playerManager = new PlayerManager<>(new TagPlayerFactory());
     private final Announcer announcer = new Announcer(playerManager);
+    private ScoreTracker scoreTracker;
 
     public TagGame(String gameName) {
         super(gameName);
@@ -25,6 +26,9 @@ public class TagGame extends Game {
 
     @Override
     protected void setup() {
+        // Create a new score tracker for this game.
+        scoreTracker = new ScoreTracker();
+
         // Assign roles to players.
         RoleManager roleManager = new RoleManager();
         roleManager.assignRandomRoles(1, playerManager.getAllPlayers());
@@ -45,7 +49,10 @@ public class TagGame extends Game {
         // Schedule the game to end after five minutes.
         long endTime = new Date().getTime() + TimeUnit.MINUTES.toMillis(5);
         TimerComponent timerComponent = getComponentManager().getComponent(TimerComponent.class);
-        timerComponent.getEventTimer().scheduleSingleEvent(endTime, this::end);
+        timerComponent.getEventTimer().scheduleSingleEvent(endTime, () -> {
+            end();
+            getAnnouncer().broadcast(ChatColor.BLUE + "The game has ended due to reaching the time limit");
+        });
     }
 
     @Override
@@ -54,8 +61,6 @@ public class TagGame extends Game {
         for (TagPlayer player : playerManager.getAllPlayers()) {
             player.setRole(Role.UNASSIGNED);
         }
-
-        getAnnouncer().broadcast(ChatColor.BLUE + "The game has ended due to reaching the time limit");
     }
 
     public void performTag(TagPlayer tagger, TagPlayer runner) {
@@ -73,23 +78,7 @@ public class TagGame extends Game {
         }
 
         // Grant five seconds of immunity to the tagger.
-        tagger.setState(State.IMMUNE);
-        long executionTime = new Date().getTime() + TimeUnit.SECONDS.toMillis(5);
-        TimerComponent timer = getComponentManager().getComponent(TimerComponent.class);
-
-        // Schedule the end of the immunity.
-        timer.getEventTimer().scheduleSingleEvent(executionTime, () ->  {
-            // Update state
-            tagger.setState(State.VULNERABLE);
-
-            // Send a message to all players that immunity has ended.
-            BaseComponent[] immunityEndedMessage = new ComponentBuilder()
-                    .append("Immunity ended for ").color(ChatColor.YELLOW)
-                    .append(tagger.getBukkitPlayer().getDisplayName()).color(tagger.getRole().getColor())
-                    .append(".").color(ChatColor.YELLOW)
-                    .create();
-            announcer.broadcast(immunityEndedMessage);
-        });
+        applyImmunity(tagger, TimeUnit.SECONDS.toMillis(5));
 
         // Send a message about the event to all players.
         BaseComponent[] tagOccurredMessage = new ComponentBuilder()
@@ -103,6 +92,47 @@ public class TagGame extends Game {
         // Set new roles.
         tagger.setRole(Role.RUNNER);
         runner.setRole(Role.TAGGER);
+
+        // Assign points
+        for (TagPlayer player : playerManager.getAllPlayers()) {
+            if (player == runner) {
+                // Tagged player does not get points
+                continue;
+            }
+
+            // Give player a point
+            scoreTracker.givePoints(player.getBukkitPlayer().getName(), 1);
+
+            // Announce score
+            int currentScore = scoreTracker.getPoints(player.getBukkitPlayer().getName());
+            BaseComponent[] playerScoreMessage = new ComponentBuilder()
+                    .append(player.getBukkitPlayer().getDisplayName()).color(ChatColor.AQUA)
+                    .append(" has ").color(ChatColor.YELLOW)
+                    .append(Integer.toString(currentScore)).color(ChatColor.DARK_PURPLE)
+                    .append(" points.").color(ChatColor.YELLOW)
+                    .create();
+            announcer.broadcast(playerScoreMessage);
+        }
+    }
+
+    private void applyImmunity(TagPlayer player, long duration) {
+        player.setState(State.IMMUNE);
+        long executionTime = new Date().getTime() + duration;
+        TimerComponent timer = getComponentManager().getComponent(TimerComponent.class);
+
+        // Schedule the end of the immunity.
+        timer.getEventTimer().scheduleSingleEvent(executionTime, () -> {
+            // Update state
+            player.setState(State.VULNERABLE);
+
+            // Send a message to all players that immunity has ended.
+            BaseComponent[] immunityEndedMessage = new ComponentBuilder()
+                    .append("Immunity ended for ").color(ChatColor.YELLOW)
+                    .append(player.getBukkitPlayer().getDisplayName()).color(player.getRole().getColor())
+                    .append(".").color(ChatColor.YELLOW)
+                    .create();
+            announcer.broadcast(immunityEndedMessage);
+        });
     }
 
     public PlayerManager<TagPlayer> getPlayerManager() {
