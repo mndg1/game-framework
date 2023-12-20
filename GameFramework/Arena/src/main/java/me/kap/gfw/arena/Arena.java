@@ -44,7 +44,7 @@ public class Arena {
      * @return The set {@link ArenaLocation}.
      */
     public ArenaLocation setLocation(ArenaLocation location) {
-        arenaLocations.put(location.getLocationName(), location);
+        arenaLocations.put(location.locationName(), location);
 
         return location;
     }

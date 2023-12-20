@@ -64,13 +64,20 @@ public class GameComponentManager {
      */
     @SuppressWarnings("unchecked")
     public <T extends GameComponent> T getComponent(Class<T> componentClass) {
-        T component = (T) components.get(componentClass);
+        GameComponent component = components.get(componentClass);
 
         if (component == null) {
             String message = String.format("Game has no component of type %s", componentClass.getTypeName());
             throw new GameComponentNotAssignedException(message);
         }
 
-        return component;
+        if (!component.getClass().isAssignableFrom(componentClass)) {
+            String message = String.format("Registered component of type %s is not assignable to %s",
+                    component.getClass().getTypeName(),
+                    componentClass.getTypeName());
+            throw new GameComponentNotAssignedException(message);
+        }
+
+        return (T) component;
     }
 }

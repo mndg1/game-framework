@@ -3,9 +3,7 @@ package me.kap.gfw.arena;
 import org.bukkit.Location;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +27,7 @@ class ArenaTest {
         ArenaLocation actualLocation =  arena.setLocation("newLocation", newBukkitLocationFake);
 
         // assert
-        assertSame(newBukkitLocationFake, actualLocation.getBukkitLocation());
+        assertSame(newBukkitLocationFake, actualLocation.bukkitLocation());
     }
 
     @Test
@@ -42,7 +40,7 @@ class ArenaTest {
         ArenaLocation actualLocation = arena.setLocation(duplicateName, newBukkitLocationFake);
 
         // assert
-        assertSame(newBukkitLocationFake, actualLocation.getBukkitLocation());
+        assertSame(newBukkitLocationFake, actualLocation.bukkitLocation());
     }
 
     @Test
