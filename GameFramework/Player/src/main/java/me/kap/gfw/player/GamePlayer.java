@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
  * This type can be extended in order to add additional fields and logic
  * if this is needed for a game implementation.
  */
+@SuppressWarnings("ClassCanBeRecord")
 public class GamePlayer {
     private final Player bukkitPlayer;
 

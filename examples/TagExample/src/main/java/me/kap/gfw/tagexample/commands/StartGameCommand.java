@@ -26,6 +26,6 @@ public class StartGameCommand implements CommandExecutor {
 
         game.getAnnouncer().broadcast(gameStartedMessage);
 
-        return false;
+        return true;
     }
 }

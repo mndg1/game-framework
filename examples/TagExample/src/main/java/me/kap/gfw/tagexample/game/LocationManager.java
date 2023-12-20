@@ -22,7 +22,7 @@ public class LocationManager {
             ArenaLocation location = getPossibleSpawnLocations().get(index);
 
             // Teleport the player to the Bukkit location that the ArenaLocation represents.
-            player.getBukkitPlayer().teleport(location.getBukkitLocation());
+            player.getBukkitPlayer().teleport(location.bukkitLocation());
         }
     }
 

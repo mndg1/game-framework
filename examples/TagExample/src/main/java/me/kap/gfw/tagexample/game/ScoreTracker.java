@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScoreTracker {
-    private Map<String, Integer> scores = new HashMap<>();
+    private final Map<String, Integer> scores = new HashMap<>();
 
     public void givePoints(String playerName, int points) {
         int newScore = points;

@@ -26,6 +26,6 @@ public class EndGameCommand implements CommandExecutor {
 
         game.getAnnouncer().broadcast(gameEndedMessage);
 
-        return false;
+        return true;
     }
 }

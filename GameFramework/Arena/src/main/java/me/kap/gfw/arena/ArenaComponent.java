@@ -29,10 +29,6 @@ public class ArenaComponent extends GameComponent {
 
     public ArenaComponent(Collection<String> requiredLocationNames, Arena arena) {
         this.requiredLocationNames = new HashSet<>(requiredLocationNames);
-
-        this.requiredLocationNames.remove(null);
-        this.requiredLocationNames.remove("");
-
         this.arena = arena;
     }
 
@@ -49,7 +45,7 @@ public class ArenaComponent extends GameComponent {
      */
     public boolean hasAllRequiredLocationsSet() {
         Set<String> arenaLocationNames = getArena().getAllLocations().stream()
-                .map(ArenaLocation::getLocationName)
+                .map(ArenaLocation::locationName)
                 .collect(Collectors.toSet());
 
         return arenaLocationNames.containsAll(requiredLocationNames);

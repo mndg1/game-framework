@@ -12,20 +12,14 @@ public class TagPlayer extends GamePlayer {
     }
 
     public boolean isTaggable() {
-        switch (getRole()) {
-            case UNASSIGNED:
-                // Players who do not have a role cannot be tagged.
-                return false;
-            case TAGGER:
-                // Taggers cannot be tagged.
-                return false;
-            case RUNNER:
-                // Runners can only be tagged if they are vulnerable (have no immunity).
-                return getState() == State.VULNERABLE;
-            default:
-                // This should not happen. Just returning false.
-                return false;
-        }
+        return switch (getRole()) {
+            // Players who do not have a role cannot be tagged.
+            case UNASSIGNED -> false;
+            // Taggers cannot be tagged.
+            case TAGGER -> false;
+            // Runners can only be tagged if they are vulnerable (have no immunity).
+            case RUNNER -> getState() == State.VULNERABLE;
+        };
     }
 
     public void sendRoleStatusNotification() {

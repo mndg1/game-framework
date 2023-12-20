@@ -22,7 +22,7 @@ class ArenaComponentTest {
         ArenaLocation arenaLocationFake = mock(ArenaLocation.class);
         Arena arenaFake = mock(Arena.class);
 
-        when(arenaLocationFake.getLocationName()).thenReturn(requiredLocationName);
+        when(arenaLocationFake.locationName()).thenReturn(requiredLocationName);
         when(arenaFake.getAllLocations()).thenReturn(Collections.singleton(arenaLocationFake));
 
         arenaComponent.setArena(arenaFake);

@@ -27,6 +27,6 @@ public class SetLocationCommand implements CommandExecutor {
         Location location = ((Player)commandSender).getLocation();
         arena.setLocation(args[0], location);
 
-        return false;
+        return true;
     }
 }

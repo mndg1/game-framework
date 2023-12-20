@@ -1,7 +1,5 @@
 package me.kap.gfw.player;
 
-import me.kap.gfw.player.exceptions.InvalidPlayerFactoryException;
-import me.kap.gfw.player.factory.PlayerFactoryRegistry;
 import me.kap.gfw.player.factory.PlayerFactory;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
