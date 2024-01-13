@@ -15,15 +15,13 @@ public class TimerComponent extends GameComponent {
     }
 
     @Override
-    public boolean start() {
+    public void start() {
         eventTimer.startTimer(plugin);
-        return true;
     }
 
     @Override
-    public boolean end() {
+    public void end() {
         eventTimer.stopTimer();
-        return true;
     }
 
     public EventTimer getEventTimer() {

@@ -1,7 +1,9 @@
 package me.kap.gfw.game;
 
 import me.kap.gfw.game.exceptions.GameComponentNotAssignedException;
+import me.kap.gfw.game.exceptions.GameStateChangeException;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,35 +16,27 @@ public class GameComponentManager {
     /**
      * Calls the start method for each added {@link GameComponent}.
      *
-     * @return True if all components started successfully.
+     * @throws GameStateChangeException When a component failed to start.
      */
-    boolean start() {
-        for (GameComponent component : components.values()) {
-            if (!component.start()) {
-                return false;
-            }
+    void start() throws GameStateChangeException {
+        for (var component : components.values()) {
+            component.start();
         }
-
-        return true;
     }
 
     /**
      * Calls the end method for each added {@link GameComponent}.
      *
-     * @return True if all components ended successfully.
+     * @throws GameStateChangeException When a component failed to end.
      */
-    boolean end() {
-        for (GameComponent component : components.values()) {
-            if (!component.end()) {
-                return false;
-            }
+    void end() throws GameStateChangeException {
+        for (var component : components.values()) {
+            component.end();
         }
-
-        return true;
     }
 
     /**
-     * Adds a {@link GameComponent} to the {@link Game}.
+     * Adds a {@link GameComponent} to the {@link GameComponentManager}.
      *
      * @param component The {@link GameComponent} to add.
      */
@@ -55,24 +49,46 @@ public class GameComponentManager {
     }
 
     /**
-     * Attempts to get a {@link GameComponent} from the {@link Game}.
+     * Adds a variable amount of {@link GameComponent}s to the {@link GameComponentManager}.
+     *
+     * @param components The {@link GameComponent}(s) to add.
+     */
+    public void addComponents(GameComponent... components) {
+        for (var component : components) {
+            addComponent(component);
+        }
+    }
+
+    /**
+     * Adds a collection of {@link GameComponent}s to the {@link GameComponentManager}.
+     *
+     * @param components The {@link GameComponent}s to add.
+     */
+    public void addComponents(Collection<GameComponent> components) {
+        for (var component : components) {
+            addComponent(component);
+        }
+    }
+
+    /**
+     * Attempts to get a {@link GameComponent} from the {@link GameComponentManager}.
      *
      * @param componentClass The {@link Class} type of the {@link GameComponent}.
      * @param <T>            The type of the {@link GameComponent}.
      * @return The {@link GameComponent} of the specified type.
-     * Throws an exception if this {@link GameComponent} is not added to the {@link Game}.
+     * Throws an exception if this {@link GameComponent} is not added to the {@link GameComponentManager}.
      */
     @SuppressWarnings("unchecked")
     public <T extends GameComponent> T getComponent(Class<T> componentClass) {
-        GameComponent component = components.get(componentClass);
+        var component = components.get(componentClass);
 
         if (component == null) {
-            String message = String.format("Game has no component of type %s", componentClass.getTypeName());
+            var message = String.format("Game has no component of type %s", componentClass.getTypeName());
             throw new GameComponentNotAssignedException(message);
         }
 
         if (!component.getClass().isAssignableFrom(componentClass)) {
-            String message = String.format("Registered component of type %s is not assignable to %s",
+            var message = String.format("Registered component of type %s is not assignable to %s",
                     component.getClass().getTypeName(),
                     componentClass.getTypeName());
             throw new GameComponentNotAssignedException(message);
