@@ -1,58 +1,45 @@
 package me.kap.gfw.game;
 
+import me.kap.gfw.game.exceptions.GameStateChangeException;
+
 /**
  * An abstract class defining what each {@link Game} implementation can do.
  * It also implements some logic that is universal to each {@link Game} implementation.
  */
 public abstract class Game {
     private final GameComponentManager componentManager = new GameComponentManager();
-    private String gameName;
-
-    protected Game(String gameName) {
-        this.gameName = gameName;
-    }
 
     /**
      * Attempts to start the game.
      */
-    public final void start() {
-        if (!componentManager.start()) {
-            return;
-        }
-
-        setup();
+    public final void start() throws GameStateChangeException {
+        componentManager.start();
+        onStart();
     }
 
     /**
      * Attempts to end the game.
      */
-    public final void end() {
-        if (!componentManager.end()) {
-            return;
-        }
-
-        finish();
+    public final void end() throws GameStateChangeException {
+        componentManager.end();
+        onEnd();
     }
 
     /**
      * Executed at the start of a game. Used for implementing custom starting logic.
      */
-    protected abstract void setup();
+    protected void onStart() {
+        // This method can be optionally overridden to add starting logic.
+    }
 
     /**
      * Executed at the end of a game. Used for implementing custom ending logic.
      */
-    protected abstract void finish();
+    protected void onEnd() {
+        // This method can be optionally overridden to add ending logic.
+    }
 
     public GameComponentManager getComponentManager() {
         return componentManager;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
     }
 }

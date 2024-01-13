@@ -1,60 +1,33 @@
 package me.kap.gfw.arena;
 
+import me.kap.gfw.game.exceptions.GameStateChangeException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.Collections;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ArenaComponentTest {
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"required-location"})
-    void whenHasAllRequiredLocations_withRequiredLocationsSet_thenReturnTrue(String requiredLocationName) {
-        // arrange
-        ArenaComponent arenaComponent = new ArenaComponent(Collections.singleton(requiredLocationName));
-
-        ArenaLocation arenaLocationFake = mock(ArenaLocation.class);
-        Arena arenaFake = mock(Arena.class);
-
-        when(arenaLocationFake.locationName()).thenReturn(requiredLocationName);
-        when(arenaFake.getAllLocations()).thenReturn(Collections.singleton(arenaLocationFake));
-
-        arenaComponent.setArena(arenaFake);
-
-        // act
-        boolean hasAllRequiredLocationsSet = arenaComponent.hasAllRequiredLocationsSet();
-
-        // assert
-        assertTrue(hasAllRequiredLocationsSet);
-    }
+    private final String requiredLocationName = "required-location";
+    private final ArenaComponent arenaComponent = new ArenaComponent(List.of(requiredLocationName), new Arena("test-arena"));
 
     @Test
-    void whenHasAllRequiredLocations_withInvalidRequiredLocationsSet_thenReturnsFalse() {
-        // arrange
-        ArenaComponent arenaComponent = new ArenaComponent(Collections.singleton("required-location"));
-
-        // act
-        boolean hasAllRequiredLocationsSet = arenaComponent.hasAllRequiredLocationsSet();
-
+    void whenStart_withMissingRequiredLocations_thenExceptionIsThrown() {
         // assert
-        assertFalse(hasAllRequiredLocationsSet);
+        assertThrows(GameStateChangeException.class, arenaComponent::start);
     }
 
     @Test
     void whenStart_withNoMissingRequiredLocations_thenStartReturnsTrue() {
         // arrange
-        ArenaComponent arenaComponent = new ArenaComponent();
-
-        // act
-        boolean startedSuccessfully = arenaComponent.start();
+        var arenaLocationFake = mock(ArenaLocation.class);
+        when(arenaLocationFake.locationName()).thenReturn(requiredLocationName);
+        arenaComponent.getArena().setLocation(arenaLocationFake);
 
         // assert
-        assertTrue(startedSuccessfully);
+        assertDoesNotThrow(arenaComponent::start);
     }
 }
