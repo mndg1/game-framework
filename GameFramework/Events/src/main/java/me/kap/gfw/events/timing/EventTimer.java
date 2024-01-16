@@ -1,22 +1,18 @@
 package me.kap.gfw.events.timing;
 
-import me.kap.gfw.events.Action;
-import me.kap.gfw.events.timing.actions.RepeatingTimeEventAction;
-import me.kap.gfw.events.timing.actions.SingularTimedEventAction;
-import me.kap.gfw.events.timing.actions.TimedEventAction;
-import me.kap.gfw.events.timing.comparators.TimedEventComparator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.util.*;
 
 /**
- * A class that is responsible for scheduling {@link TimedEventAction}s.
+ * A class that is responsible for executing scheduled events.
  */
 public class EventTimer {
     private final Clock clock;
-    private final Queue<TimedEventAction> actions = new PriorityQueue<>(new TimedEventComparator());
+    private final Queue<ScheduledEvent> scheduledEvents = new PriorityQueue<>(new ScheduledEvent.ExecutionTimeComparator());
 
     private BukkitRunnable timer;
 
@@ -31,13 +27,13 @@ public class EventTimer {
     /**
      * Starts the timer.
      *
-     * @param plugin The {@link Plugin} that runs the timer.
+     * @param plugin The {@link Plugin} that schedules the task.
      */
     public void startTimer(Plugin plugin) {
         timer = new BukkitRunnable() {
             @Override
             public void run() {
-                processActions();
+                processEvents();
             }
         };
 
@@ -52,63 +48,71 @@ public class EventTimer {
     }
 
     /**
-     * Adds a {@link SingularTimedEventAction} to the timer.
+     * Schedules an event to execute at a certain time.
+     * When passing an interval that is greater than 0, the event will be repeating itself indefinitely.
      *
-     * @param executionTime The epoch time value at which to execute the action.
-     * @param action        The action which should be executed.
+     * @param delay    The delay after which to execute the event.
+     * @param callback The callback which should be executed.
      */
-    public void scheduleSingleEvent(long executionTime, Action action) {
-        TimedEventAction eventAction = new SingularTimedEventAction(executionTime, action);
-        actions.offer(eventAction);
+    public void scheduleEvent(Duration delay, Runnable callback) {
+        scheduleEvent(delay, callback, Duration.ZERO);
     }
 
     /**
-     * Adds a {@link RepeatingTimeEventAction} to the timer.
+     * Schedules an event to execute at a certain time.
+     * When passing an interval that is greater than 0, the event will be repeating itself indefinitely.
      *
-     * @param nextExecutionTime The epoch time value of when the action should first be executed.
-     * @param interval          The amount of milliseconds between executions.
-     * @param action            The action which should be executed.
+     * @param delay     The delay after which to execute the event.
+     * @param callback  The callback which should be executed.
+     * @param interval  The interval used to schedule repeating events.
      */
-    public void scheduleRepeatingEvent(long nextExecutionTime, int interval, Action action) {
-        TimedEventAction eventAction = new RepeatingTimeEventAction(clock, nextExecutionTime, interval, action);
-        actions.offer(eventAction);
+    public void scheduleEvent(Duration delay, Runnable callback, Duration interval) {
+        var shouldRepeat = interval.toMillis() > Duration.ZERO.toMillis();
+        var event = new TimedEvent(callback, shouldRepeat, interval);
+
+        var executionTime = clock.millis() + delay.toMillis();
+        var scheduledEvent = new ScheduledEvent(executionTime, event);
+        scheduledEvents.offer(scheduledEvent);
     }
 
     /**
-     * Executes the scheduled {@link TimedEventAction}s.
+     * Executes the scheduled {@link TimedEvent}s.
      */
-    private void processActions() {
-        Date now = new Date();
+    private void processEvents() {
+        var now = clock.millis();
 
-        Collection<TimedEventAction> actionsToExecute = pollActionsToExecute(now.getTime());
+        var eventsToExecute = pollEventsToExecute(now);
 
-        for (TimedEventAction action : actionsToExecute) {
-            action.execute();
+        for (var event : eventsToExecute) {
+            event.callback().run();
 
-            // Repeating actions will have updated their execution time.
-            if (action.getNextExecutionTime() > now.getTime()) {
-                actions.offer(action);
+            if (event.repeating()) {
+                scheduleEvent(event.interval(), event.callback(), event.interval());
             }
         }
     }
 
     /**
-     * Retrieves and removes all {@link TimedEventAction} instances which should be executed at the given time.
+     * Retrieves and removes all {@link TimedEvent} instances which should be executed at the given time.
      *
      * @param timeNow The current epoch time.
-     * @return A collection of {@link TimedEventAction}s which should be executed.
+     * @return A collection of {@link TimedEvent}s which should be executed.
      */
-    private Collection<TimedEventAction> pollActionsToExecute(long timeNow) {
-        Collection<TimedEventAction> actionsToExecute = new ArrayList<>();
+    private Collection<TimedEvent> pollEventsToExecute(long timeNow) {
+        var eventsToExecute = new ArrayList<TimedEvent>();
 
-        while (!actions.isEmpty()) {
-            if (actions.peek().getNextExecutionTime() > timeNow) {
+        while (!scheduledEvents.isEmpty()) {
+            if (scheduledEvents.peek().executionTime() > timeNow) {
                 break;
             }
 
-            actionsToExecute.add(actions.poll());
+            eventsToExecute.add(scheduledEvents.poll().event());
         }
 
-        return actionsToExecute;
+        return eventsToExecute;
+    }
+
+    public Clock getClock() {
+        return clock;
     }
 }
