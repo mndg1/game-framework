@@ -1,7 +1,5 @@
 package me.kap.gfw.events.timing.actions;
 
-import me.kap.gfw.events.Action;
-
 import java.time.Clock;
 
 /**
@@ -14,8 +12,8 @@ public class RepeatingTimeEventAction extends TimedEventAction {
     public RepeatingTimeEventAction(Clock clock,
                                     long nextExecutionTime,
                                     int executionInterval,
-                                    Action action) {
-        super(nextExecutionTime, action);
+                                    Runnable callback) {
+        super(nextExecutionTime, callback);
         this.clock = clock;
         this.executionInterval = executionInterval;
     }

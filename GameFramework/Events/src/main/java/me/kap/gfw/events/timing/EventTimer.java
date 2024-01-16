@@ -1,6 +1,5 @@
 package me.kap.gfw.events.timing;
 
-import me.kap.gfw.events.Action;
 import me.kap.gfw.events.timing.actions.RepeatingTimeEventAction;
 import me.kap.gfw.events.timing.actions.SingularTimedEventAction;
 import me.kap.gfw.events.timing.actions.TimedEventAction;
@@ -54,23 +53,23 @@ public class EventTimer {
     /**
      * Adds a {@link SingularTimedEventAction} to the timer.
      *
-     * @param executionTime The epoch time value at which to execute the action.
-     * @param action        The action which should be executed.
+     * @param executionTime The epoch time value at which to execute the callback.
+     * @param callback        The callback which should be executed.
      */
-    public void scheduleSingleEvent(long executionTime, Action action) {
-        TimedEventAction eventAction = new SingularTimedEventAction(executionTime, action);
+    public void scheduleSingleEvent(long executionTime, Runnable callback) {
+        TimedEventAction eventAction = new SingularTimedEventAction(executionTime, callback);
         actions.offer(eventAction);
     }
 
     /**
      * Adds a {@link RepeatingTimeEventAction} to the timer.
      *
-     * @param nextExecutionTime The epoch time value of when the action should first be executed.
+     * @param nextExecutionTime The epoch time value of when the callback should first be executed.
      * @param interval          The amount of milliseconds between executions.
-     * @param action            The action which should be executed.
+     * @param callback            The callback which should be executed.
      */
-    public void scheduleRepeatingEvent(long nextExecutionTime, int interval, Action action) {
-        TimedEventAction eventAction = new RepeatingTimeEventAction(clock, nextExecutionTime, interval, action);
+    public void scheduleRepeatingEvent(long nextExecutionTime, int interval, Runnable callback) {
+        TimedEventAction eventAction = new RepeatingTimeEventAction(clock, nextExecutionTime, interval, callback);
         actions.offer(eventAction);
     }
 

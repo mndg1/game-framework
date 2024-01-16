@@ -1,19 +1,19 @@
 package me.kap.gfw.events;
 
 /**
- * An abstract class which represents an {@link Action} that can be executed at a given point.
+ * An abstract class which holds a {@link Runnable} that can be executed at a given point.
  */
 public abstract class EventAction {
-    private final Action action;
+    private final Runnable callback;
 
-    protected EventAction(Action action) {
-        this.action = action;
+    protected EventAction(Runnable callback) {
+        this.callback = callback;
     }
 
     /**
-     * Executes the {@link Action}.
+     * Executes the event callback.
      */
     public void execute() {
-        action.execute();
+        callback.run();
     }
 }

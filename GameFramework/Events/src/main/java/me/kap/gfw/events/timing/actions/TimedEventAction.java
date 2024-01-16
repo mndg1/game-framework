@@ -1,6 +1,5 @@
 package me.kap.gfw.events.timing.actions;
 
-import me.kap.gfw.events.Action;
 import me.kap.gfw.events.EventAction;
 
 /**
@@ -9,8 +8,8 @@ import me.kap.gfw.events.EventAction;
 public abstract class TimedEventAction extends EventAction {
     private long nextExecutionTime;
 
-    protected TimedEventAction(long nextExecutionTime, Action action) {
-        super(action);
+    protected TimedEventAction(long nextExecutionTime, Runnable callback) {
+        super(callback);
         this.nextExecutionTime = nextExecutionTime;
     }
 
