@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class EventTimer {
     private final Clock clock;
-    private final Queue<ScheduledEvent> scheduledEvents = new PriorityQueue<>(new ScheduledEvent.ExecutionTimeComparator());
+    private final Queue<ScheduledEvent> scheduledEvents = new PriorityQueue<>(Comparator.comparing(ScheduledEvent::executionTime));
 
     private BukkitRunnable timer;
 
