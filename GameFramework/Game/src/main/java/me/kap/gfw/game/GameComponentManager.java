@@ -3,7 +3,6 @@ package me.kap.gfw.game;
 import me.kap.gfw.game.exceptions.GameComponentNotAssignedException;
 import me.kap.gfw.game.exceptions.GameStateChangeException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
