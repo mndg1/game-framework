@@ -17,7 +17,7 @@ class ArenaComponentTest {
     @Test
     void whenStart_withMissingRequiredLocations_thenExceptionIsThrown() {
         // assert
-        assertThrows(GameStateChangeException.class, arenaComponent::start);
+        assertThrows(GameStateChangeException.class, arenaComponent::validateStart);
     }
 
     @Test
@@ -28,6 +28,6 @@ class ArenaComponentTest {
         arenaComponent.getArena().setLocation(arenaLocationFake);
 
         // assert
-        assertDoesNotThrow(arenaComponent::start);
+        assertDoesNotThrow(arenaComponent::validateStart);
     }
 }
