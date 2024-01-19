@@ -33,7 +33,7 @@ public class ArenaComponent extends GameComponent {
     }
 
     @Override
-    public void start() throws GameStateChangeException {
+    public void validateStart() throws GameStateChangeException {
         var missingLocationNames = getMissingRequiredLocationNames();
 
         if (!missingLocationNames.isEmpty()) {
