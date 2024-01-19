@@ -14,28 +14,6 @@ public class GameComponentManager {
     private final Map<Class<? extends GameComponent>, GameComponent> components = new HashMap<>();
 
     /**
-     * Calls the start method for each added {@link GameComponent}.
-     *
-     * @throws GameStateChangeException When a component failed to start.
-     */
-    void start() throws GameStateChangeException {
-        for (var component : components.values()) {
-            component.start();
-        }
-    }
-
-    /**
-     * Calls the end method for each added {@link GameComponent}.
-     *
-     * @throws GameStateChangeException When a component failed to end.
-     */
-    void end() throws GameStateChangeException {
-        for (var component : components.values()) {
-            component.end();
-        }
-    }
-
-    /**
      * Adds a {@link GameComponent} to the {@link GameComponentManager}.
      *
      * @param component The {@link GameComponent} to add.
@@ -95,5 +73,31 @@ public class GameComponentManager {
         }
 
         return (T) component;
+    }
+
+    /**
+     * Calls the start method for each added {@link GameComponent}.
+     *
+     * @throws GameStateChangeException When a component failed to start.
+     */
+    void start() throws GameStateChangeException {
+        StateChangeValidator.validateComponentStart(components.values());
+
+        for (var component : components.values()) {
+            component.start();
+        }
+    }
+
+    /**
+     * Calls the end method for each added {@link GameComponent}.
+     *
+     * @throws GameStateChangeException When a component failed to end.
+     */
+    void end() throws GameStateChangeException {
+        StateChangeValidator.validateComponentEnd(components.values());
+
+        for (var component : components.values()) {
+            component.end();
+        }
     }
 }

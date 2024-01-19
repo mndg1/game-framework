@@ -15,19 +15,19 @@ class ArenaComponentTest {
     private final ArenaComponent arenaComponent = new ArenaComponent(List.of(requiredLocationName), new Arena("test-arena"));
 
     @Test
-    void whenStart_withMissingRequiredLocations_thenExceptionIsThrown() {
+    void whenValidateStart_withMissingRequiredLocations_thenExceptionIsThrown() {
         // assert
-        assertThrows(GameStateChangeException.class, arenaComponent::start);
+        assertThrows(GameStateChangeException.class, arenaComponent::validateStart);
     }
 
     @Test
-    void whenStart_withNoMissingRequiredLocations_thenStartReturnsTrue() {
+    void whenValidateStart_withNoMissingRequiredLocations_thenStartReturnsTrue() {
         // arrange
         var arenaLocationFake = mock(ArenaLocation.class);
         when(arenaLocationFake.locationName()).thenReturn(requiredLocationName);
         arenaComponent.getArena().setLocation(arenaLocationFake);
 
         // assert
-        assertDoesNotThrow(arenaComponent::start);
+        assertDoesNotThrow(arenaComponent::validateStart);
     }
 }

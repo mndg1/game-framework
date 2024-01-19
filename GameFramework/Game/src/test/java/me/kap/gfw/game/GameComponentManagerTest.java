@@ -87,17 +87,17 @@ class GameComponentManagerTest {
     @Test
     void whenStart_withFailingComponent_thenExceptionIsThrown() throws GameStateChangeException {
         // arrange
-        doThrow(GameStateChangeException.class).when(failingComponentFake).end();
+        doThrow(GameStateChangeException.class).when(failingComponentFake).validateStart();
         componentManager.addComponent(failingComponentFake);
 
         // assert
-        assertThrows(GameStateChangeException.class, componentManager::end);
+        assertThrows(GameStateChangeException.class, componentManager::start);
     }
 
     @Test
     void whenEnd_withFailingComponent_thenExceptionIsThrown() throws GameStateChangeException {
         // arrange
-        doThrow(GameStateChangeException.class).when(failingComponentFake).end();
+        doThrow(GameStateChangeException.class).when(failingComponentFake).validateEnd();
         componentManager.addComponent(failingComponentFake);
 
         // assert
