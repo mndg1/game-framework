@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>gfw</artifactId>
+    <artifactId>gfw-package</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -19,6 +19,7 @@
     </properties>
 
     <build>
+        <finalName>GameFramework</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
