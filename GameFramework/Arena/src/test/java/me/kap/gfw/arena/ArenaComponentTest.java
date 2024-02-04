@@ -11,21 +11,35 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ArenaComponentTest {
-    private final String requiredLocationName = "required-location";
-    private final ArenaComponent arenaComponent = new ArenaComponent(List.of(requiredLocationName), new Arena("test-arena"));
 
     @Test
     void whenValidateStart_withMissingRequiredLocations_thenExceptionIsThrown() {
+        // arrange
+        var requiredLocationNames = List.of("required-location");
+        var arenaComponent = new ArenaComponent(requiredLocationNames);
+
         // assert
         assertThrows(GameStateChangeException.class, arenaComponent::validateStart);
     }
 
     @Test
-    void whenValidateStart_withNoMissingRequiredLocations_thenStartReturnsTrue() {
+    void whenValidateStart_withNoMissingRequiredLocations_thenNoExceptionIsThrown() {
         // arrange
+        var requiredLocationName = "required-location";
         var arenaLocationFake = mock(ArenaLocation.class);
         when(arenaLocationFake.locationName()).thenReturn(requiredLocationName);
+
+        var arenaComponent = new ArenaComponent(List.of(requiredLocationName));
         arenaComponent.getArena().setLocation(arenaLocationFake);
+
+        // assert
+        assertDoesNotThrow(arenaComponent::validateStart);
+    }
+
+    @Test
+    void whenValidateStart_withNoRequiredLocationsDefined_thenNoExceptionIsThrown() {
+        // arrange
+        var arenaComponent = new ArenaComponent();
 
         // assert
         assertDoesNotThrow(arenaComponent::validateStart);
