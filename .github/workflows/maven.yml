@@ -28,5 +28,3 @@ jobs:
         distribution: 'temurin'
     - name: Build FrameWork
       run: mvn -B package --file GameFramework/pom.xml
-    - name: Build Tag Example
-      run: mvn -B package --file examples/TagExample/pom.xml
