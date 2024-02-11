@@ -26,5 +26,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Build
+    - name: Build FrameWork
       run: mvn -B package --file GameFramework/pom.xml
+    - name: Build Tag Example
+      run: mvn -B package --file TagExample/pom.xml
