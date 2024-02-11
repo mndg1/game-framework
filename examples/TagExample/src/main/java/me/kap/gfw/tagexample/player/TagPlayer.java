@@ -22,12 +22,6 @@ public class TagPlayer extends GamePlayer {
         };
     }
 
-    public void sendRoleStatusNotification() {
-        String roleMessage = getRole().getColor() + getRole().getName();
-
-        getBukkitPlayer().sendTitle(roleMessage, null, 20, 30, 20);
-    }
-
     public Role getRole() {
         return role;
     }

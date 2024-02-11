@@ -1,7 +1,6 @@
 package me.kap.gfw.tagexample.events;
 
 import me.kap.gfw.tagexample.game.TagGame;
-import me.kap.gfw.tagexample.player.TagPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,8 +17,8 @@ public class EntityInteractEvents implements Listener {
     @EventHandler
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
         // Try to get the player's that where involved in the event.
-        Player damager = getEntityAsPlayer(event.getDamager());
-        Player damaged = getEntityAsPlayer(event.getEntity());
+        var damager = getEntityAsPlayer(event.getDamager());
+        var damaged = getEntityAsPlayer(event.getEntity());
 
         // If either one of the entities involved is not a player, the method will return.
         if (damager == null || damaged == null) {
@@ -27,8 +26,8 @@ public class EntityInteractEvents implements Listener {
         }
 
         // Check if the players involved are part of the tag game.
-        TagPlayer tagger = tagGame.getPlayerManager().getPlayer(damager.getUniqueId());
-        TagPlayer runner = tagGame.getPlayerManager().getPlayer(damaged.getUniqueId());
+        var tagger = tagGame.getPlayerManager().getPlayer(damager.getUniqueId());
+        var runner = tagGame.getPlayerManager().getPlayer(damaged.getUniqueId());
 
         // If either one of the players is not in the game, the method will return.
         if (tagger == null || runner == null) {

@@ -13,9 +13,7 @@ public class Announcer {
     }
 
     public void broadcast(BaseComponent[] message) {
-        for (GamePlayer player : playerManager.getAllPlayers()) {
-            player.getBukkitPlayer().spigot().sendMessage(message);
-        }
+        playerManager.getAllPlayers().forEach(player -> player.getBukkitPlayer().spigot().sendMessage(message));
     }
 
     public void broadcast(String message) {
