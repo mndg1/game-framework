@@ -29,7 +29,6 @@ class ArenaComponentTest {
         var arenaLocationFake = mock(ArenaLocation.class);
         when(arenaLocationFake.locationName()).thenReturn(requiredLocationName);
 
-// act
         var arenaComponent = new ArenaComponent(List.of(requiredLocationName));
         arenaComponent.getArena().setLocation(arenaLocationFake);
 
