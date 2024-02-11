@@ -37,7 +37,7 @@ class PlayerManagerGamePlayerTest {
         playerManager.addNewPlayer(bukkitPlayerFake);
 
         // assert
-        GamePlayer addedPlayer = playerManager.getPlayer(playerId);
+        var addedPlayer = playerManager.getPlayer(playerId);
         assertNotNull(addedPlayer);
     }
 
@@ -57,10 +57,10 @@ class PlayerManagerGamePlayerTest {
         playerManager.addNewPlayer(bukkitPlayerFake);
 
         // act
-        Set<GamePlayer> allPlayers = playerManager.getAllPlayers();
+        var allPlayers = playerManager.getAllPlayers();
 
         // assert
-        Set<GamePlayer> expectedPlayers = new HashSet<>(Collections.singletonList(gamePlayerFake));
+        var expectedPlayers = new HashSet<>(Collections.singletonList(gamePlayerFake));
 
         assertEquals(allPlayers, expectedPlayers);
     }

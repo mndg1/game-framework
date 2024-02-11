@@ -11,11 +11,10 @@ import static org.mockito.Mockito.*;
 
 class PlayerFactoryGamePlayerTest {
     private final PlayerFactory<GamePlayer> playerFactory;
-
     private final Player bukkitPlayerFake;
 
     PlayerFactoryGamePlayerTest() {
-        UUID playerId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+        var playerId = UUID.fromString("00000000-0000-0000-0000-000000000000");
         bukkitPlayerFake = mock(Player.class);
 
         when(bukkitPlayerFake.getUniqueId()).thenReturn(playerId);
@@ -26,7 +25,7 @@ class PlayerFactoryGamePlayerTest {
     @Test
     void whenCreatePlayer_withBukkitPlayer_thenGamePlayerIsCreated() {
         // act
-        GamePlayer createdPlayer = playerFactory.createPlayer(bukkitPlayerFake);
+        var createdPlayer = playerFactory.createPlayer(bukkitPlayerFake);
 
         // assert
         assertNotNull(createdPlayer);
