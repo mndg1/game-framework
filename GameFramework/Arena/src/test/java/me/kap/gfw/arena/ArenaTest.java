@@ -3,71 +3,92 @@ package me.kap.gfw.arena;
 import org.bukkit.Location;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ArenaTest {
-    private final Arena arena;
-    private final Location newBukkitLocationFake;
-    private final Location existingBukkitLocationFake;
-
-    ArenaTest() {
-        newBukkitLocationFake = mock(Location.class);
-        existingBukkitLocationFake = mock(Location.class);
-
-        arena = new Arena();
-    }
+    private final Arena arena = new Arena();
 
     @Test
-    void whenSetLocation_withNewLocation_thenNewLocationIsSame() {
-        // act
-        ArenaLocation actualLocation =  arena.setLocation("newLocation", newBukkitLocationFake);
-
-        // assert
-        assertSame(newBukkitLocationFake, actualLocation.bukkitLocation());
-    }
-
-    @Test
-    void whenSetLocation_withExistingLocation_thenLocationIsSameAsNew() {
+    void whenSetLocation_withNewLocation_thenAddedBukkitLocationIsSame() {
         // arrange
-        String duplicateName = "duplicateLocation";
-        arena.setLocation(duplicateName, existingBukkitLocationFake);
+        var newBukkitLocation = mock(Location.class);
 
         // act
-        ArenaLocation actualLocation = arena.setLocation(duplicateName, newBukkitLocationFake);
+        var actualLocation = arena.setLocation("newLocation", newBukkitLocation);
 
         // assert
-        assertSame(newBukkitLocationFake, actualLocation.bukkitLocation());
+        assertSame(newBukkitLocation, actualLocation.bukkitLocation());
+    }
+
+    @Test
+    void whenSetLocation_withDuplicateLocationName_thenExistingLocationIsUpdated() {
+        // arrange
+        var duplicateName = "Location";
+        var existingBukkitLocation = mock(Location.class);
+        var newBukkitLocation = mock(Location.class);
+        arena.setLocation(duplicateName, existingBukkitLocation);
+
+        // act
+        var actualLocation = arena.setLocation(duplicateName, newBukkitLocation);
+
+        // assert
+        assertSame(newBukkitLocation, actualLocation.bukkitLocation());
     }
 
     @Test
     void whenRemoveLocation_withExistingLocation_thenLocationIsNull() {
         // arrange
-        String existingName = "existingLocation";
-        arena.setLocation(existingName, existingBukkitLocationFake);
+        var location = mock(ArenaLocation.class);
+        arena.setLocation(location);
 
         // act
-        arena.removeLocation(existingName);
+        arena.removeLocation(location.locationName());
 
         // assert
-        assertNull(arena.getLocation(existingName));
+        assertNull(arena.getLocation(location.locationName()));
     }
 
     @Test
-    void whenGetAllLocations_withExistingLocations_thenAllLocationsAreReturned() {
+    void whenGetAllLocations_withUniqueLocations_thenAllLocationsAreReturned() {
         // arrange
-        ArenaLocation existingArenaLocation = new ArenaLocation("existingLocation", existingBukkitLocationFake);
-        arena.setLocation(existingArenaLocation);
+        var uniqueLocations = List.of(mock(ArenaLocation.class));
+        uniqueLocations.forEach(arena::setLocation);
 
         // act
-        Set<ArenaLocation> allLocations = arena.getAllLocations();
+        var allLocations = arena.getAllLocations();
 
         // assert
-        Set<ArenaLocation> expectedLocations = Collections.singleton(existingArenaLocation);
+        assertIterableEquals(uniqueLocations, allLocations);
+    }
 
-        assertEquals(expectedLocations, allLocations);
+    @Test
+    void whenGetAllLocations_withDuplicateLocations_thenAllUniqueLocationsAreReturned() {
+        // arrange
+        var location = mock(ArenaLocation.class);
+        var locationsToAdd = List.of(location, location);
+        locationsToAdd.forEach(arena::setLocation);
+
+        // act
+        var allLocations = arena.getAllLocations();
+
+        // assert
+        assertEquals(1, allLocations.size());
+    }
+
+    @Test
+    void whenGetAllLocations_thenReturnsImmutableCollection() {
+        // arrange
+        var location = mock(ArenaLocation.class);
+        arena.setLocation(location);
+
+        // act
+        var retrievedLocations = arena.getAllLocations();
+        retrievedLocations.clear();
+
+        // assert
+        assertEquals(1, arena.getAllLocations().size());
     }
 }

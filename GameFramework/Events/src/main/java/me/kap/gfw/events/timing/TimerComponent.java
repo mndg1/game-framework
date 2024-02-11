@@ -8,10 +8,15 @@ import org.bukkit.plugin.Plugin;
  */
 public class TimerComponent extends GameComponent {
     private final Plugin plugin;
-    private final EventTimer eventTimer = new EventTimer();
+    private final EventTimer eventTimer;
 
-    public TimerComponent(Plugin plugin) {
+    public  TimerComponent(Plugin plugin) {
+        this(plugin, new EventTimer());
+    }
+
+    public TimerComponent(Plugin plugin, EventTimer eventTimer) {
         this.plugin = plugin;
+        this.eventTimer = eventTimer;
     }
 
     @Override
