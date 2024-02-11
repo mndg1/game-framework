@@ -33,7 +33,7 @@ class GameTest {
     }
 
     @Test
-    void whenStart_withExceptions_thenOnStartIsNotCalled() throws GameStateChangeException {
+    void whenStart_withExceptions_thenOnStartIsNotCalled() {
         // arrange
         game.getComponentManager().addComponents(new GameComponent() {
             @Override
@@ -44,14 +44,18 @@ class GameTest {
         var gameSpy = spy(game);
 
         // act
-        gameSpy.start();
+        try {
+            gameSpy.start();
+        } catch (GameStateChangeException ignored) {
+
+        }
 
         // assert
         verify(gameSpy, never()).onStart();
     }
 
     @Test
-    void whenEnd_withExceptions_thenOnEndIsNotCalled() throws GameStateChangeException {
+    void whenEnd_withExceptions_thenOnEndIsNotCalled() {
         // arrange
         game.getComponentManager().addComponents(new GameComponent() {
             @Override
@@ -62,7 +66,11 @@ class GameTest {
         var gameSpy = spy(game);
 
         // act
-        gameSpy.end();
+        try {
+            gameSpy.end();
+        } catch (GameStateChangeException ignored) {
+
+        }
 
         // assert
         verify(gameSpy, never()).onEnd();
