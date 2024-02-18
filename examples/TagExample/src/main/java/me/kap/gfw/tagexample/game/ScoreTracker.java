@@ -35,6 +35,10 @@ public class ScoreTracker {
     }
 
     private int getPoints(String playerName) {
+        if (!scores.containsKey(playerName)) {
+            return 0;
+        }
+
         return scores.get(playerName);
     }
 }

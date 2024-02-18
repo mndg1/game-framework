@@ -13,7 +13,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class TagGame extends Game {
@@ -31,6 +30,10 @@ public class TagGame extends Game {
         // Create a new score tracker for this game.
         scoreTracker = new ScoreTracker();
 
+        // Teleport players to the arena.
+        var arenaComponent = getComponentManager().getComponent(ArenaComponent.class);
+        LocationHelper.teleportPlayersToArena(arenaComponent.getArena(), playerManager.getAllPlayers());
+
         // Assign roles to players.
         RoleHelper.assignRandomRoles(1, playerManager.getAllPlayers());
 
@@ -40,10 +43,6 @@ public class TagGame extends Game {
             // Display the role to the player.
             RoleHelper.sendRoleStatusNotification(player);
         });
-
-        // Teleport players to the arena.
-        var arenaComponent = getComponentManager().getComponent(ArenaComponent.class);
-        LocationHelper.teleportPlayersToArena(arenaComponent.getArena(), playerManager.getAllPlayers());
 
         // Schedule the game to end after five minutes.
         var timerComponent = getComponentManager().getComponent(TimerComponent.class);
@@ -83,7 +82,7 @@ public class TagGame extends Game {
         }
 
         // Grant five seconds of immunity to the tagger.
-        applyImmunity(tagger, TimeUnit.SECONDS.toMillis(5));
+        applyImmunity(tagger, Duration.ofSeconds(5));
 
         // Send a message about the event to all players.
         var tagOccurredMessage = new ComponentBuilder()
@@ -107,12 +106,12 @@ public class TagGame extends Game {
         scoreTracker.broadcastPoints(announcer, playerManager.getAllPlayers());
     }
 
-    private void applyImmunity(TagPlayer player, long duration) {
+    private void applyImmunity(TagPlayer player, Duration duration) {
         player.setState(State.IMMUNE);
         var timer = getComponentManager().getComponent(TimerComponent.class);
 
         // Schedule the end of the immunity.
-        timer.getEventTimer().scheduleEvent(Duration.ofSeconds(duration), () -> {
+        timer.getEventTimer().scheduleEvent(duration, () -> {
             // Update state
             player.setState(State.VULNERABLE);
 
