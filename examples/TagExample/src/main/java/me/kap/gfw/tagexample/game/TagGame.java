@@ -51,17 +51,21 @@ public class TagGame extends Game {
             try {
                 // end() may throw a GameStateChangeException when the game is not in a valid state to end.
                 end();
-                getAnnouncer().broadcast(ChatColor.BLUE + "The game has ended due to reaching the time limit");
+                getAnnouncer().broadcast(ChatColor.BLUE + "The game reached its time limit");
             } catch (GameStateChangeException stateChangeException) {
                 logger.warning(stateChangeException.getMessage());
             }
         });
+
+        getAnnouncer().broadcast(ChatColor.GREEN + "The game has started!");
     }
 
     @Override
     protected void onEnd() {
         // Reset the roles.
         playerManager.getAllPlayers().forEach(player -> player.setRole(Role.UNASSIGNED));
+
+        getAnnouncer().broadcast(ChatColor.RED + "The game has ended!");
     }
 
     public void performTag(TagPlayer tagger, TagPlayer runner) {
