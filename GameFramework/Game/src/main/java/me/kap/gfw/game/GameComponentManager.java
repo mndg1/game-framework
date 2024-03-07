@@ -15,10 +15,10 @@ public class GameComponentManager {
 
     /**
      * Adds a {@link GameComponent} to the {@link GameComponentManager}.
-     *
+     * MADE private to reduce to prevent it from being called as a method.
      * @param component The {@link GameComponent} to add.
      */
-    public void addComponent(GameComponent component) {
+    private void addComponent(GameComponent component) {
         if (components.containsKey(component.getClass())) {
             return;
         }
@@ -28,7 +28,8 @@ public class GameComponentManager {
 
     /**
      * Adds a variable amount of {@link GameComponent}s to the {@link GameComponentManager}.
-     *
+     * Merged with addComponent() so that the user only needs to call one method to add a
+     * component.
      * @param components The {@link GameComponent}(s) to add.
      */
     public void addComponents(GameComponent... components) {
