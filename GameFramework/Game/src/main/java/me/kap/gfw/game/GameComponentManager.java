@@ -15,7 +15,7 @@ public class GameComponentManager {
 
     /**
      * Adds a {@link GameComponent} to the {@link GameComponentManager}.
-     * MADE private to reduce to prevent it from being called as a method.
+     * MADE PRIVATE to prevent it from being called as a method.
      * @param component The {@link GameComponent} to add.
      */
     private void addComponent(GameComponent component) {
