@@ -3,64 +3,68 @@ package me.kap.gfw.tagexample.game;
 import me.kap.gfw.arena.ArenaComponent;
 import me.kap.gfw.events.timing.TimerComponent;
 import me.kap.gfw.game.Game;
+import me.kap.gfw.game.exceptions.GameStateChangeException;
 import me.kap.gfw.player.PlayerManager;
 import me.kap.gfw.tagexample.player.Role;
 import me.kap.gfw.tagexample.player.State;
 import me.kap.gfw.tagexample.player.TagPlayer;
 import me.kap.gfw.tagexample.player.TagPlayerFactory;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.util.logging.Logger;
 
 public class TagGame extends Game {
     private final PlayerManager<TagPlayer> playerManager = new PlayerManager<>(new TagPlayerFactory());
     private final Announcer announcer = new Announcer(playerManager);
+    private final Logger logger;
     private ScoreTracker scoreTracker;
 
-    public TagGame(String gameName) {
-        super(gameName);
+    public TagGame(Logger logger) {
+        this.logger = logger;
     }
 
     @Override
-    protected void setup() {
+    protected void onStart() {
         // Create a new score tracker for this game.
         scoreTracker = new ScoreTracker();
 
-        // Assign roles to players.
-        RoleManager roleManager = new RoleManager();
-        roleManager.assignRandomRoles(1, playerManager.getAllPlayers());
+        // Teleport players to the arena.
+        var arenaComponent = getComponentManager().getComponent(ArenaComponent.class);
+        LocationHelper.teleportPlayersToArena(arenaComponent.getArena(), playerManager.getAllPlayers());
 
-        for (TagPlayer player : playerManager.getAllPlayers()) {
+        // Assign roles to players.
+        RoleHelper.assignRandomRoles(1, playerManager.getAllPlayers());
+
+        playerManager.getAllPlayers().forEach(player -> {
             // Make sure the player is vulnerable.
             player.setState(State.VULNERABLE);
-
             // Display the role to the player.
-            player.sendRoleStatusNotification();
-        }
-
-        // Teleport players to the arena.
-        ArenaComponent arenaComponent = getComponentManager().getComponent(ArenaComponent.class);
-        LocationManager locationManager = new LocationManager(arenaComponent.getArena());
-        locationManager.teleportPlayersToArena(playerManager.getAllPlayers());
+            RoleHelper.sendRoleStatusNotification(player);
+        });
 
         // Schedule the game to end after five minutes.
-        long endTime = new Date().getTime() + TimeUnit.MINUTES.toMillis(5);
-        TimerComponent timerComponent = getComponentManager().getComponent(TimerComponent.class);
-        timerComponent.getEventTimer().scheduleSingleEvent(endTime, () -> {
-            end();
-            getAnnouncer().broadcast(ChatColor.BLUE + "The game has ended due to reaching the time limit");
+        var timerComponent = getComponentManager().getComponent(TimerComponent.class);
+        timerComponent.getEventTimer().scheduleEvent(Duration.ofMinutes(5), () -> {
+            try {
+                // end() may throw a GameStateChangeException when the game is not in a valid state to end.
+                end();
+                getAnnouncer().broadcast(ChatColor.BLUE + "The game reached its time limit");
+            } catch (GameStateChangeException stateChangeException) {
+                logger.warning(stateChangeException.getMessage());
+            }
         });
+
+        getAnnouncer().broadcast(ChatColor.GREEN + "The game has started!");
     }
 
     @Override
-    protected void finish() {
-        // Reset the roles
-        for (TagPlayer player : playerManager.getAllPlayers()) {
-            player.setRole(Role.UNASSIGNED);
-        }
+    protected void onEnd() {
+        // Reset the roles.
+        playerManager.getAllPlayers().forEach(player -> player.setRole(Role.UNASSIGNED));
+
+        getAnnouncer().broadcast(ChatColor.RED + "The game has ended!");
     }
 
     public void performTag(TagPlayer tagger, TagPlayer runner) {
@@ -78,10 +82,10 @@ public class TagGame extends Game {
         }
 
         // Grant five seconds of immunity to the tagger.
-        applyImmunity(tagger, TimeUnit.SECONDS.toMillis(5));
+        applyImmunity(tagger, Duration.ofSeconds(5));
 
         // Send a message about the event to all players.
-        BaseComponent[] tagOccurredMessage = new ComponentBuilder()
+        var tagOccurredMessage = new ComponentBuilder()
                 .append(tagger.getBukkitPlayer().getDisplayName()).color(tagger.getRole().getColor())
                 .append(" has tagged ").color(ChatColor.YELLOW)
                 .append(runner.getBukkitPlayer().getDisplayName()).color(runner.getRole().getColor())
@@ -93,40 +97,26 @@ public class TagGame extends Game {
         tagger.setRole(Role.RUNNER);
         runner.setRole(Role.TAGGER);
 
-        // Assign points
-        for (TagPlayer player : playerManager.getAllPlayers()) {
-            if (player == runner) {
-                // Tagged player does not get points
-                continue;
-            }
+        playerManager.getAllPlayers().stream()
+                // Tagged player does not earn points.
+                .filter(player -> player != runner)
+                // All other players do earn a point.
+                .forEach(player -> scoreTracker.givePoints(player.getBukkitPlayer().getName(), 1));
 
-            // Give player a point
-            scoreTracker.givePoints(player.getBukkitPlayer().getName(), 1);
-
-            // Announce score
-            int currentScore = scoreTracker.getPoints(player.getBukkitPlayer().getName());
-            BaseComponent[] playerScoreMessage = new ComponentBuilder()
-                    .append(player.getBukkitPlayer().getDisplayName()).color(ChatColor.AQUA)
-                    .append(" has ").color(ChatColor.YELLOW)
-                    .append(Integer.toString(currentScore)).color(ChatColor.DARK_PURPLE)
-                    .append(" points.").color(ChatColor.YELLOW)
-                    .create();
-            announcer.broadcast(playerScoreMessage);
-        }
+        scoreTracker.broadcastPoints(announcer, playerManager.getAllPlayers());
     }
 
-    private void applyImmunity(TagPlayer player, long duration) {
+    private void applyImmunity(TagPlayer player, Duration duration) {
         player.setState(State.IMMUNE);
-        long executionTime = new Date().getTime() + duration;
-        TimerComponent timer = getComponentManager().getComponent(TimerComponent.class);
+        var timer = getComponentManager().getComponent(TimerComponent.class);
 
         // Schedule the end of the immunity.
-        timer.getEventTimer().scheduleSingleEvent(executionTime, () -> {
+        timer.getEventTimer().scheduleEvent(duration, () -> {
             // Update state
             player.setState(State.VULNERABLE);
 
             // Send a message to all players that immunity has ended.
-            BaseComponent[] immunityEndedMessage = new ComponentBuilder()
+            var immunityEndedMessage = new ComponentBuilder()
                     .append("Immunity ended for ").color(ChatColor.YELLOW)
                     .append(player.getBukkitPlayer().getDisplayName()).color(player.getRole().getColor())
                     .append(".").color(ChatColor.YELLOW)

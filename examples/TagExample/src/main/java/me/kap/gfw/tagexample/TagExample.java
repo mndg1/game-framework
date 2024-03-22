@@ -2,7 +2,6 @@ package me.kap.gfw.tagexample;
 
 import me.kap.gfw.arena.ArenaComponent;
 import me.kap.gfw.events.timing.TimerComponent;
-import me.kap.gfw.game.GameBuilder;
 import me.kap.gfw.tagexample.commands.EndGameCommand;
 import me.kap.gfw.tagexample.commands.SetLocationCommand;
 import me.kap.gfw.tagexample.commands.StartGameCommand;
@@ -16,12 +15,13 @@ public final class TagExample extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Create a new instance of a TagGame using the GameBuilder.
-        TagGame game = new GameBuilder<>(TagGame.class)
-                .addComponents(
-                        new TimerComponent(this),
-                        new ArenaComponent())
-                .build();
+        var game = new TagGame(getLogger());
+
+        // Add components to the game
+        game.getComponentManager().addComponents(
+                new TimerComponent(this),
+                new ArenaComponent()
+        );
 
         Bukkit.getPluginManager().registerEvents(new EntityInteractEvents(game), this);
         Bukkit.getPluginManager().registerEvents(new PlayerLogEvents(game.getPlayerManager()), this);
@@ -31,10 +31,5 @@ public final class TagExample extends JavaPlugin {
 
         ArenaComponent arenaComponent = game.getComponentManager().getComponent(ArenaComponent.class);
         getCommand("setLocation").setExecutor(new SetLocationCommand(arenaComponent.getArena()));
-    }
-
-    @Override
-    public void onDisable() {
-
     }
 }

@@ -9,7 +9,7 @@ public class TagPlayerFactory implements PlayerFactory<TagPlayer> {
     // and ensures that their role is 'unassigned'.
     @Override
     public TagPlayer createPlayer(Player player) {
-        TagPlayer tagPlayer = new TagPlayer(player);
+        var tagPlayer = new TagPlayer(player);
         tagPlayer.setRole(Role.UNASSIGNED);
 
         return tagPlayer;
