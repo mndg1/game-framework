@@ -1,29 +1,32 @@
 package me.kap.gfw.arena;
 
-import me.kap.gfw.game.exceptions.GameStateChangeException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ArenaComponentTest {
 
     @Test
-    void whenValidateStart_withMissingRequiredLocations_thenExceptionIsThrown() {
+    void whenValidateStart_withMissingRequiredLocations_thenStartConditionsAreNotMet() {
         // arrange
         var requiredLocationNames = List.of("required-location");
         var arenaComponent = new ArenaComponent(requiredLocationNames);
 
+        // act
+        var failingConditions = arenaComponent.getConfiguration().startConditions().stream()
+                .filter(x -> !x.condition().get())
+                .toList();
+
         // assert
-        assertThrows(GameStateChangeException.class, arenaComponent::validateStart);
+        assertEquals(1, failingConditions.size());
     }
 
     @Test
-    void whenValidateStart_withNoMissingRequiredLocations_thenNoExceptionIsThrown() {
+    void whenValidateStart_withNoMissingRequiredLocations_thenStartConditionsAreMet() {
         // arrange
         var requiredLocationName = "required-location";
         var arenaLocationFake = mock(ArenaLocation.class);
@@ -32,8 +35,13 @@ class ArenaComponentTest {
         var arenaComponent = new ArenaComponent(List.of(requiredLocationName));
         arenaComponent.getArena().setLocation(arenaLocationFake);
 
+        // act
+        var failingConditions = arenaComponent.getConfiguration().startConditions().stream()
+                .filter(x -> !x.condition().get())
+                .toList();
+
         // assert
-        assertDoesNotThrow(arenaComponent::validateStart);
+        assertEquals(0, failingConditions.size());
     }
 
     @Test
@@ -41,7 +49,12 @@ class ArenaComponentTest {
         // arrange
         var arenaComponent = new ArenaComponent();
 
+        // act
+        var failingConditions = arenaComponent.getConfiguration().startConditions().stream()
+                .filter(x -> !x.condition().get())
+                .toList();
+
         // assert
-        assertDoesNotThrow(arenaComponent::validateStart);
+        assertEquals(0, failingConditions.size());
     }
 }

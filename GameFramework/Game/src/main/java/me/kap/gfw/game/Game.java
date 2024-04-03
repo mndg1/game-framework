@@ -8,21 +8,30 @@ import me.kap.gfw.game.exceptions.GameStateChangeException;
  */
 public abstract class Game {
     private final GameComponentManager componentManager = new GameComponentManager();
+    private GameState state = GameState.IDLE;
 
     /**
      * Attempts to start the game.
      */
     public final void start() throws GameStateChangeException {
-        componentManager.start();
+        state = GameState.STARTING;
+
+        componentManager.performStateChange(state);
         onStart();
+
+        state = GameState.RUNNING;
     }
 
     /**
      * Attempts to end the game.
      */
     public final void end() throws GameStateChangeException {
-        componentManager.end();
+        state = GameState.ENDING;
+
+        componentManager.performStateChange(state);
         onEnd();
+
+        state = GameState.IDLE;
     }
 
     /**
@@ -41,5 +50,9 @@ public abstract class Game {
 
     public GameComponentManager getComponentManager() {
         return componentManager;
+    }
+
+    public GameState getState() {
+        return state;
     }
 }

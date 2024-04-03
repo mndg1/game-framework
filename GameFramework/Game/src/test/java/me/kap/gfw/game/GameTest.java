@@ -37,8 +37,8 @@ class GameTest {
         // arrange
         game.getComponentManager().addComponents(new GameComponent() {
             @Override
-            public void validateStart() throws GameStateChangeException {
-                throw new GameStateChangeException("Error");
+            public void configure(GameComponentConfigurationBuilder configurationBuilder) {
+                configurationBuilder.addStartCondition(() -> false);
             }
         });
         var gameSpy = spy(game);
@@ -59,8 +59,8 @@ class GameTest {
         // arrange
         game.getComponentManager().addComponents(new GameComponent() {
             @Override
-            public void validateEnd() throws GameStateChangeException {
-                throw new GameStateChangeException("Error");
+            public void configure(GameComponentConfigurationBuilder configurationBuilder) {
+                configurationBuilder.addEndCondition(() -> false);
             }
         });
         var gameSpy = spy(game);
