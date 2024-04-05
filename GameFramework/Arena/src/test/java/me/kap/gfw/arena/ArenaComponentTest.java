@@ -1,32 +1,31 @@
 package me.kap.gfw.arena;
 
+import me.kap.gfw.game.Game;
+import me.kap.gfw.game.exceptions.GameStateChangeException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ArenaComponentTest {
+    private final Game game = new Game() {
+    };
 
     @Test
-    void whenValidateStart_withMissingRequiredLocations_thenStartConditionsAreNotMet() {
+    void whenStart_withMissingRequiredLocations_thenExceptionIsThrown() {
         // arrange
         var requiredLocationNames = List.of("required-location");
         var arenaComponent = new ArenaComponent(requiredLocationNames);
-
-        // act
-        var failingConditions = arenaComponent.getConfiguration().startConditions().stream()
-                .filter(x -> !x.condition().get())
-                .toList();
+        game.getComponentManager().addComponents(arenaComponent);
 
         // assert
-        assertEquals(1, failingConditions.size());
+        assertThrows(GameStateChangeException.class, game::start);
     }
 
     @Test
-    void whenValidateStart_withNoMissingRequiredLocations_thenStartConditionsAreMet() {
+    void whenStart_withNoMissingRequiredLocations_thenNoExceptionIsThrown() {
         // arrange
         var requiredLocationName = "required-location";
         var arenaLocationFake = mock(ArenaLocation.class);
@@ -34,27 +33,19 @@ class ArenaComponentTest {
 
         var arenaComponent = new ArenaComponent(List.of(requiredLocationName));
         arenaComponent.getArena().setLocation(arenaLocationFake);
-
-        // act
-        var failingConditions = arenaComponent.getConfiguration().startConditions().stream()
-                .filter(x -> !x.condition().get())
-                .toList();
+        game.getComponentManager().addComponents(arenaComponent);
 
         // assert
-        assertEquals(0, failingConditions.size());
+        assertDoesNotThrow(game::start);
     }
 
     @Test
-    void whenValidateStart_withNoRequiredLocationsDefined_thenNoExceptionIsThrown() {
+    void whenStart_withNoRequiredLocationsDefined_thenNoExceptionIsThrown() {
         // arrange
         var arenaComponent = new ArenaComponent();
-
-        // act
-        var failingConditions = arenaComponent.getConfiguration().startConditions().stream()
-                .filter(x -> !x.condition().get())
-                .toList();
+        game.getComponentManager().addComponents(arenaComponent);
 
         // assert
-        assertEquals(0, failingConditions.size());
+        assertDoesNotThrow(game::start);
     }
 }

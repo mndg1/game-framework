@@ -75,6 +75,12 @@ public class GameComponentManager {
         return (T) component;
     }
 
+    /**
+     * Attempts to perform component logic that is associated with the state change.
+     *
+     * @param state The current state of the game.
+     * @throws GameStateChangeException If any of the components cannot go to the next state.
+     */
     void performStateChange(GameState state) throws GameStateChangeException {
         var failedConditions = components.values().stream()
                 .flatMap(x -> x.getConfiguration().getConditionsForStateChange(state).stream())

@@ -35,7 +35,7 @@ public abstract class GameComponent {
         // This method may be overridden in order to configure the component.
     }
 
-    public GameComponentConfiguration getConfiguration() {
+    GameComponentConfiguration getConfiguration() {
         return configuration;
     }
 }
