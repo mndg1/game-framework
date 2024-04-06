@@ -1,7 +1,7 @@
 package me.kap.gfw.arena;
 
 import me.kap.gfw.game.GameComponent;
-import me.kap.gfw.game.exceptions.GameStateChangeException;
+import me.kap.gfw.game.GameComponentConfigurationBuilder;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,15 +33,12 @@ public class ArenaComponent extends GameComponent {
     }
 
     @Override
-    public void validateStart() throws GameStateChangeException {
-        var missingLocationNames = getMissingRequiredLocationNames();
-
-        if (!missingLocationNames.isEmpty()) {
-            var errorMessage = "Arena is not in a valid state because it is missing the following locations: " +
-                    String.join(", ", missingLocationNames);
-
-            throw new GameStateChangeException(errorMessage);
-        }
+    public void configure(GameComponentConfigurationBuilder configurationBuilder) {
+        configurationBuilder.addStartCondition(
+                () -> getMissingRequiredLocationNames().isEmpty(),
+                () -> "Arena is not in a valid state because it is missing the following locations: " +
+                        String.join(", ", getMissingRequiredLocationNames())
+        );
     }
 
     /**

@@ -76,28 +76,31 @@ public class GameComponentManager {
     }
 
     /**
-     * Calls the start method for each added {@link GameComponent}.
+     * Attempts to perform component logic that is associated with the state change.
      *
-     * @throws GameStateChangeException When a component failed to start.
+     * @param state The current state of the game.
+     * @throws GameStateChangeException If any of the components cannot go to the next state.
      */
-    void start() throws GameStateChangeException {
-        StateChangeValidator.validateComponentStart(components.values());
+    void performStateChange(GameState state) throws GameStateChangeException {
+        var failedConditions = components.values().stream()
+                .flatMap(x -> x.getConfiguration().getConditionsForStateChange(state).stream())
+                .filter(x -> !x.condition().get())
+                .toList();
 
-        for (var component : components.values()) {
-            component.start();
+        if (!failedConditions.isEmpty()) {
+            var errorMessages = failedConditions.stream()
+                    .map(x -> x.errorMessageSupplier().get())
+                    .toList();
+            var aggregatedMessages = String.join("; ", errorMessages);
+            var exceptionMessage = String.format("State update failed at %s: %s", state, aggregatedMessages);
+            throw new GameStateChangeException(exceptionMessage);
         }
-    }
-
-    /**
-     * Calls the end method for each added {@link GameComponent}.
-     *
-     * @throws GameStateChangeException When a component failed to end.
-     */
-    void end() throws GameStateChangeException {
-        StateChangeValidator.validateComponentEnd(components.values());
 
         for (var component : components.values()) {
-            component.end();
+            switch (state) {
+                case STARTING -> component.start();
+                case ENDING -> component.end();
+            }
         }
     }
 }

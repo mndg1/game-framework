@@ -4,6 +4,7 @@ import me.kap.gfw.game.exceptions.GameStateChangeException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -14,8 +15,24 @@ class GameComponentManagerTest {
     private final GameComponent failingComponentFake;
 
     GameComponentManagerTest() {
+        var passingComponentConfiguration = new GameComponentConfiguration(
+                List.of(new StateChangeCondition(() -> true, "Unknown reason")),
+                List.of(new StateChangeCondition(() -> true, "Unknown reason"))
+        );
+
+        var failingComponentConfiguration = new GameComponentConfiguration(
+                List.of(new StateChangeCondition(() -> false, "Unknown reason")),
+                List.of(new StateChangeCondition(() -> false, "Unknown reason"))
+        );
+
         passingComponentFake = mock(GameComponent.class);
+        when(passingComponentFake.getConfiguration())
+                .thenReturn(passingComponentConfiguration);
+
         failingComponentFake = mock(GameComponent.class);
+        when(failingComponentFake.getConfiguration())
+                .thenReturn(failingComponentConfiguration);
+
         componentManager = new GameComponentManager();
     }
 
@@ -67,41 +84,39 @@ class GameComponentManagerTest {
     }
 
     @Test
-    void whenStart_withPassingComponent_thenStartsSuccessfully() {
+    void whenPerformStartingState_withPassingComponent_thenStartsSuccessfully() {
         // arrange
         componentManager.addComponent(passingComponentFake);
 
         // assert
-        assertDoesNotThrow(componentManager::start);
+        assertDoesNotThrow(() -> componentManager.performStateChange(GameState.STARTING));
     }
 
     @Test
-    void whenEnd_withPassingComponent_thenStartsSuccessfully() {
+    void whenPerformEndingState_withPassingComponent_thenStartsSuccessfully() {
         // arrange
         componentManager.addComponent(passingComponentFake);
 
         // assert
-        assertDoesNotThrow(componentManager::end);
+        assertDoesNotThrow(() -> componentManager.performStateChange(GameState.ENDING));
     }
 
     @Test
-    void whenStart_withFailingComponent_thenExceptionIsThrown() throws GameStateChangeException {
+    void whenPerformStartingState_withFailingComponent_thenExceptionIsThrown() {
         // arrange
-        doThrow(GameStateChangeException.class).when(failingComponentFake).validateStart();
         componentManager.addComponent(failingComponentFake);
 
         // assert
-        assertThrows(GameStateChangeException.class, componentManager::start);
+        assertThrows(GameStateChangeException.class, () -> componentManager.performStateChange(GameState.STARTING));
     }
 
     @Test
-    void whenEnd_withFailingComponent_thenExceptionIsThrown() throws GameStateChangeException {
+    void whenPerformEndingState_withFailingComponent_thenExceptionIsThrown() {
         // arrange
-        doThrow(GameStateChangeException.class).when(failingComponentFake).validateEnd();
         componentManager.addComponent(failingComponentFake);
 
         // assert
-        assertThrows(GameStateChangeException.class, componentManager::end);
+        assertThrows(GameStateChangeException.class, () -> componentManager.performStateChange(GameState.ENDING));
     }
 
     private static class ComponentFakeA extends GameComponent {

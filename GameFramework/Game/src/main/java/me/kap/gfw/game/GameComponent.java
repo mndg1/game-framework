@@ -1,11 +1,16 @@
 package me.kap.gfw.game;
 
-import me.kap.gfw.game.exceptions.GameStateChangeException;
-
 /**
  * An abstract class that allows for adding additional logic to a game.
  */
 public abstract class GameComponent {
+    private final GameComponentConfiguration configuration;
+
+    protected GameComponent() {
+        var configurationBuilder = new GameComponentConfigurationBuilder();
+        configure(configurationBuilder);
+        configuration = configurationBuilder.build();
+    }
 
     /**
      * Allows for adding additional starting logic to a game.
@@ -22,20 +27,15 @@ public abstract class GameComponent {
     }
 
     /**
-     * Validate whether the component can allow the game to start.
+     * Allows for configuring various settings of the component.
      *
-     * @throws GameStateChangeException When the component should prevent the game from moving into the start phase.
+     * @param configurationBuilder Configuration builder through which to configure component settings.
      */
-    public void validateStart() throws GameStateChangeException {
-        // This method may be overridden in order to add validation logic.
+    public void configure(GameComponentConfigurationBuilder configurationBuilder) {
+        // This method may be overridden in order to configure the component.
     }
 
-    /**
-     * Validate whether the component can allow the game to end.
-     *
-     * @throws GameStateChangeException When the component should prevent the game from moving to the end phase.
-     */
-    public void validateEnd() throws GameStateChangeException {
-        // This method may be overridden in order to add validation logic.
+    GameComponentConfiguration getConfiguration() {
+        return configuration;
     }
 }
