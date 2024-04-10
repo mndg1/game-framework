@@ -1,6 +1,8 @@
 package me.kap.gfw.tagexample.events;
 
+import me.kap.gfw.game.GameState;
 import me.kap.gfw.tagexample.game.TagGame;
+import me.kap.gfw.tagexample.game.components.TagHandlerComponent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +18,11 @@ public class EntityInteractEvents implements Listener {
 
     @EventHandler
     public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
+        // If the game is not running, no tagging logic needs to be executed.
+        if (tagGame.getState() != GameState.RUNNING) {
+            return;
+        }
+
         // Try to get the player's that where involved in the event.
         var damager = getEntityAsPlayer(event.getDamager());
         var damaged = getEntityAsPlayer(event.getEntity());
@@ -35,7 +42,8 @@ public class EntityInteractEvents implements Listener {
         }
 
         // Perform the tagging logic.
-        tagGame.performTag(tagger, runner);
+        var tagHandlerComponent = tagGame.getComponentManager().getComponent(TagHandlerComponent.class);
+        tagHandlerComponent.performTag(tagger, runner);
 
         // Cancel the event so that no damage is applied.
         event.setCancelled(true);
