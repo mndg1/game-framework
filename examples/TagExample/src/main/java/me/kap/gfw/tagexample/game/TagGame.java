@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 public class TagGame extends Game {
     private final PlayerManager<TagPlayer> playerManager = new PlayerManager<>(new TagPlayerFactory());
-    private final Announcer announcer = new Announcer(playerManager);
     private final Logger logger;
     private ScoreTracker scoreTracker;
 
@@ -105,10 +104,6 @@ public class TagGame extends Game {
 
     public PlayerManager<TagPlayer> getPlayerManager() {
         return playerManager;
-    }
-
-    public Announcer getAnnouncer() {
-        return announcer;
     }
 
     private ScoreTracker getScoreTracker() {
