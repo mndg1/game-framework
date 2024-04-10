@@ -24,13 +24,6 @@ public class StartGameCommand implements CommandExecutor {
             commandSender.sendMessage(stateChangeException.getMessage());
         }
 
-        var gameStartedMessage = new ComponentBuilder()
-                .append("The game has started!")
-                .color(ChatColor.GREEN)
-                .create();
-
-        game.getAnnouncer().broadcast(gameStartedMessage);
-
         return true;
     }
 }

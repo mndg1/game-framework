@@ -24,13 +24,6 @@ public class EndGameCommand implements CommandExecutor {
             commandSender.sendMessage(stateChangeException.getMessage());
         }
 
-        var gameEndedMessage = new ComponentBuilder()
-                .append("The game has ended!")
-                .color(ChatColor.RED)
-                .create();
-
-        game.getAnnouncer().broadcast(gameEndedMessage);
-
         return true;
     }
 }
