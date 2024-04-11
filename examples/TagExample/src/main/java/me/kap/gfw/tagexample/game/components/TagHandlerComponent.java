@@ -12,6 +12,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 
+// This component handles the tagging logic.
 public class TagHandlerComponent extends GameComponent {
     private final PlayerManager<TagPlayer> playerManager;
     private final Collection<OnTag> tagEventSubscribers = new ArrayList<>();

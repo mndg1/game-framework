@@ -11,6 +11,7 @@ import me.kap.gfw.player.PlayerManager;
 import java.util.List;
 import java.util.Random;
 
+// This component handles the teleportation of players to the arena when the game starts.
 public class PlayerSpawnComponent extends GameComponent {
     private final ArenaComponent arenaComponent;
     private final PlayerManager<? extends GamePlayer> playerManager;
@@ -23,6 +24,7 @@ public class PlayerSpawnComponent extends GameComponent {
 
     @Override
     public void configure(GameComponentConfigurationBuilder configurationBuilder) {
+        // There must be at least one location for players to teleport to for this component to work.
         configurationBuilder.addStartCondition(
                 () -> !getPossibleSpawnLocations(arenaComponent.getArena()).isEmpty(),
                 "No locations have been set which players can be teleported to");

@@ -45,7 +45,7 @@ public class TagGame extends Game {
         var timerComponent = getComponentManager().getComponent(TimerComponent.class);
         timerComponent.getEventTimer().scheduleEvent(Duration.ofMinutes(5), () -> {
             try {
-                // end() may throw a GameStateChangeException when the game is not in a valid state to end.
+                // end() may throw a GameStateChangeException when the game's components are not in a valid state to end.
                 end();
                 getPlayerManager().getAllPlayers()
                         .forEach(player -> player.getBukkitPlayer().sendMessage(ChatColor.BLUE + "The game reached its time limit"));
@@ -62,9 +62,6 @@ public class TagGame extends Game {
 
     @Override
     protected void onEnd() {
-        // Reset the roles.
-        playerManager.getAllPlayers().forEach(player -> player.setRole(Role.UNASSIGNED));
-
         getPlayerManager().getAllPlayers()
                 .forEach(player -> player.getBukkitPlayer().sendMessage(ChatColor.RED + "The game has ended!"));
 

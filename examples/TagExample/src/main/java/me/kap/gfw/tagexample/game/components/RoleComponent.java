@@ -7,6 +7,7 @@ import me.kap.gfw.tagexample.player.TagPlayer;
 
 import java.util.*;
 
+// This component handles to assigning of roles throughout game state updates
 public class RoleComponent extends GameComponent {
     private final PlayerManager<TagPlayer> playerManager;
     private final int taggerAmount;
@@ -23,7 +24,7 @@ public class RoleComponent extends GameComponent {
 
     @Override
     public void start() {
-        // Pick taggers
+        // Pick taggers.
         for (var i = 0; i < taggerAmount; i++) {
             var unassignedPlayers = getPlayersWithRole(Role.UNASSIGNED).stream().toList();
             var playerIndex = random.nextInt(unassignedPlayers.size());
@@ -33,12 +34,19 @@ public class RoleComponent extends GameComponent {
             sendRoleStatusNotification(chosenTagger);
         }
 
-        // Assign runner to remaining players
+        // Assign runner to remaining players.
         getPlayersWithRole(Role.UNASSIGNED)
                 .forEach(player -> {
                     player.setRole(Role.RUNNER);
                     sendRoleStatusNotification(player);
                 });
+    }
+
+    @Override
+    public void end() {
+        // Reset roles when the game ends.
+        playerManager.getAllPlayers()
+                .forEach(player -> player.setRole(Role.UNASSIGNED));
     }
 
     // Filters players based on their role and returns a list of all players with the matching role.

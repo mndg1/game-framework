@@ -49,7 +49,6 @@ public class EntityInteractEvents implements Listener {
         event.setCancelled(true);
     }
 
-    // This method attempts to cast the entity to a Player. If it fails, it returns null
     private Player getEntityAsPlayer(Entity entity) {
         if (!(entity instanceof Player)) {
             return null;
