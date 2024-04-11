@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ScoreTracker {
@@ -21,15 +22,24 @@ public class ScoreTracker {
     }
 
     public BaseComponent[] getPointsAnnouncementMessage() {
-        var aggregatedMessage = new ComponentBuilder();
+        var playerScoreMessage = new ComponentBuilder();
 
-        scores.forEach((playerName, score) -> aggregatedMessage
-                .append(playerName).color(ChatColor.AQUA)
-                .append(" has ").color(ChatColor.YELLOW)
-                .append(Integer.toString(score)).color(ChatColor.DARK_PURPLE)
-                .append(" points.").color(ChatColor.YELLOW)
-                .append("\n"));
+        for (Iterator<Map.Entry<String, Integer>> iterator = scores.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            String playerName = entry.getKey();
+            Integer score = entry.getValue();
 
-        return aggregatedMessage.create();
+            playerScoreMessage
+                    .append(playerName).color(ChatColor.AQUA)
+                    .append(" has ").color(ChatColor.YELLOW)
+                    .append(Integer.toString(score)).color(ChatColor.DARK_PURPLE)
+                    .append(" points.").color(ChatColor.YELLOW);
+
+            if (iterator.hasNext()) {
+                playerScoreMessage.append("\n");
+            }
+        }
+
+        return playerScoreMessage.create();
     }
 }
