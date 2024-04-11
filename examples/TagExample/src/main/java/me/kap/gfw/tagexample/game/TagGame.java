@@ -75,11 +75,7 @@ public class TagGame extends Game {
         // Apply five seconds of immunity to the tagger when a tagger tags a runner.
         tagHandlerComponent.addOnTagListener(((tagger, tagged) -> {
             var timerComponent = getComponentManager().getComponent(TimerComponent.class);
-            PlayerStateHelper.applyImmunity(tagger, timerComponent, Duration.ofSeconds(5));
-
-            // Broadcast a message about the immunity ending.
-            getPlayerManager().getAllPlayers()
-                    .forEach(player -> player.getBukkitPlayer().spigot().sendMessage(PlayerStateHelper.getImmunityEndedMessage(tagger)));
+            PlayerStateHelper.applyImmunity(tagger, timerComponent, Duration.ofSeconds(5), getPlayerManager().getAllPlayers());
         }));
 
         // When a player gets tagged, all players except the tagged player earn a point.
