@@ -8,7 +8,6 @@ import me.kap.gfw.player.PlayerManager;
 import me.kap.gfw.tagexample.game.components.PlayerSpawnComponent;
 import me.kap.gfw.tagexample.game.components.RoleComponent;
 import me.kap.gfw.tagexample.game.components.TagHandlerComponent;
-import me.kap.gfw.tagexample.player.Role;
 import me.kap.gfw.tagexample.player.TagPlayer;
 import me.kap.gfw.tagexample.player.TagPlayerFactory;
 import net.md_5.bungee.api.ChatColor;
