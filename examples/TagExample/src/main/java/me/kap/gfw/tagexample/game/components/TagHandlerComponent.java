@@ -43,11 +43,11 @@ public class TagHandlerComponent extends GameComponent {
         // Execute methods that are subscribed to the onTag event.
         tagEventSubscribers.forEach(x -> x.callback(tagger, tagged));
 
+        broadcastTagOccurredMessage(tagger, tagged);
+
         // Update involved player roles.
         tagged.setRole(Role.TAGGER);
         tagger.setRole(Role.RUNNER);
-
-        broadcastTagOccurredMessage(tagger, tagged);
     }
 
     public void addOnTagListener(OnTag callback) {
