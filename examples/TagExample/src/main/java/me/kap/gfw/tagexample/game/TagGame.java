@@ -24,15 +24,13 @@ public class TagGame extends Game {
     public TagGame(Plugin plugin, Logger logger) {
         this.logger = logger;
 
-        getComponentManager().addComponents(
-                new TimerComponent(plugin),
-                new ArenaComponent(),
-                new PlayerSpawnComponent(
-                        getComponentManager().getComponent(ArenaComponent.class),
-                        getPlayerManager()),
-                new RoleComponent(getPlayerManager()),
-                new TagHandlerComponent(getPlayerManager())
-        );
+        var timerComponent = new TimerComponent(plugin);
+        var arenaComponent = new ArenaComponent();
+        var playerSpawnComponent = new PlayerSpawnComponent(arenaComponent, getPlayerManager());
+        var roleComponent = new RoleComponent(getPlayerManager());
+        var tagHandlerComponent = new TagHandlerComponent(getPlayerManager());
+
+        getComponentManager().addComponents(timerComponent, arenaComponent, playerSpawnComponent, roleComponent, tagHandlerComponent);
     }
 
     @Override
