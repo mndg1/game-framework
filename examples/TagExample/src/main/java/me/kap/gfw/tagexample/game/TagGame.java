@@ -11,6 +11,7 @@ import me.kap.gfw.tagexample.game.components.TagHandlerComponent;
 import me.kap.gfw.tagexample.player.TagPlayer;
 import me.kap.gfw.tagexample.player.TagPlayerFactory;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.plugin.Plugin;
 
 import java.time.Duration;
@@ -24,13 +25,17 @@ public class TagGame extends Game {
     public TagGame(Plugin plugin, Logger logger) {
         this.logger = logger;
 
+        // Instantiate components.
         var timerComponent = new TimerComponent(plugin);
         var arenaComponent = new ArenaComponent();
         var playerSpawnComponent = new PlayerSpawnComponent(arenaComponent, getPlayerManager());
         var roleComponent = new RoleComponent(getPlayerManager());
         var tagHandlerComponent = new TagHandlerComponent(getPlayerManager());
 
+        // Register components.
         getComponentManager().addComponents(timerComponent, arenaComponent, playerSpawnComponent, roleComponent, tagHandlerComponent);
+
+        registerPlayerManagerMessages();
     }
 
     @Override
@@ -90,6 +95,28 @@ public class TagGame extends Game {
             getPlayerManager().getAllPlayers()
                     .forEach(player -> player.getBukkitPlayer().spigot().sendMessage(getScoreTracker().getPointsAnnouncementMessage()));
         }));
+    }
+
+    private void registerPlayerManagerMessages() {
+        // Broadcast a message when a player was added.
+        getPlayerManager().addPlayerAddCallback(addedPlayer -> {
+            var playerAddedMessage = new ComponentBuilder()
+                    .append(addedPlayer.getBukkitPlayer().getName()).color(ChatColor.AQUA)
+                    .append(" was added to the tag game.").color(ChatColor.GREEN)
+                    .create();
+
+            getPlayerManager().getAllPlayers().forEach(player -> player.getBukkitPlayer().spigot().sendMessage(playerAddedMessage));
+        });
+
+        // Broadcast a message when a player was removed.
+        getPlayerManager().addPlayerRemoveCallback(removedPlayer -> {
+            var playerRemovedMessage = new ComponentBuilder()
+                    .append(removedPlayer.getBukkitPlayer().getName()).color(ChatColor.AQUA)
+                    .append(" was removed from the tag game.").color(ChatColor.RED)
+                    .create();
+
+            getPlayerManager().getAllPlayers().forEach(player -> player.getBukkitPlayer().spigot().sendMessage(playerRemovedMessage));
+        });
     }
 
     public PlayerManager<TagPlayer> getPlayerManager() {

@@ -5,16 +5,19 @@ import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * A container for players that are a part of a game.
- * The players can be a {@link GamePlayer} or any of it's subtypes.
+ * The players can be a {@link GamePlayer} or any of its subtypes.
  *
  * @param <T> The {@link GamePlayer} type that this {@link PlayerManager} contains.
  */
 public class PlayerManager<T extends GamePlayer> {
     private final PlayerFactory<T> playerFactory;
     private final Map<UUID, T> players = new HashMap<>();
+    private final Collection<Consumer<T>> playerAddCallbacks = new ArrayList<>();
+    private final Collection<Consumer<T>> playerRemoveCallbacks = new ArrayList<>();
 
     public PlayerManager(@NonNull PlayerFactory<T> playerFactory) {
         this.playerFactory = playerFactory;
@@ -32,6 +35,8 @@ public class PlayerManager<T extends GamePlayer> {
 
         T player = playerFactory.createPlayer(bukkitPlayer);
         players.put(player.getBukkitPlayer().getUniqueId(), player);
+
+        playerAddCallbacks.forEach(x -> x.accept(player));
     }
 
     /**
@@ -40,7 +45,15 @@ public class PlayerManager<T extends GamePlayer> {
      * @param uuid The {@link UUID} of the player you wish to remove.
      */
     public void removePlayer(UUID uuid) {
+        var player = getPlayer(uuid);
+
+        if (player == null) {
+            return;
+        }
+
         players.remove(uuid);
+
+        playerRemoveCallbacks.forEach(x -> x.accept(player));
     }
 
     /**
@@ -59,5 +72,25 @@ public class PlayerManager<T extends GamePlayer> {
      */
     public Set<T> getAllPlayers() {
         return new HashSet<>(players.values());
+    }
+
+    /**
+     * Adds a callback function to execute when a player is added to this {@link PlayerManager}
+     *
+     * @param callback The function to execute when a player is added.
+     *                 The callback function takes a player as a parameter.
+     */
+    public void addPlayerAddCallback(Consumer<T> callback) {
+        playerAddCallbacks.add(callback);
+    }
+
+    /**
+     * Adds a callback function to execute when a player is removed from this {@link PlayerManager}
+     *
+     * @param callback The function to execute when a player is removed.
+     *                 The callback function takes a player as a parameter.
+     */
+    public void addPlayerRemoveCallback(Consumer<T> callback) {
+        playerRemoveCallbacks.add(callback);
     }
 }
