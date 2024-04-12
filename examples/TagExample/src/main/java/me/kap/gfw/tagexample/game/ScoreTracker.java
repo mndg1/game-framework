@@ -1,12 +1,12 @@
 package me.kap.gfw.tagexample.game;
 
-import me.kap.gfw.tagexample.player.TagPlayer;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class ScoreTracker {
     private final Map<String, Integer> scores = new HashMap<>();
@@ -21,24 +21,25 @@ public class ScoreTracker {
         scores.put(playerName, newScore);
     }
 
-    public void broadcastPoints(Announcer announcer, Set<TagPlayer> players) {
-        players.forEach(player -> {
-            var currentScore = getPoints(player.getBukkitPlayer().getName());
-            var playerScoreMessage = new ComponentBuilder()
-                    .append(player.getBukkitPlayer().getDisplayName()).color(ChatColor.AQUA)
-                    .append(" has ").color(ChatColor.YELLOW)
-                    .append(Integer.toString(currentScore)).color(ChatColor.DARK_PURPLE)
-                    .append(" points.").color(ChatColor.YELLOW)
-                    .create();
-            announcer.broadcast(playerScoreMessage);
-        });
-    }
+    public BaseComponent[] getPointsAnnouncementMessage() {
+        var playerScoreMessage = new ComponentBuilder();
 
-    private int getPoints(String playerName) {
-        if (!scores.containsKey(playerName)) {
-            return 0;
+        for (Iterator<Map.Entry<String, Integer>> iterator = scores.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            String playerName = entry.getKey();
+            Integer score = entry.getValue();
+
+            playerScoreMessage
+                    .append(playerName).color(ChatColor.AQUA)
+                    .append(" has ").color(ChatColor.YELLOW)
+                    .append(Integer.toString(score)).color(ChatColor.DARK_PURPLE)
+                    .append(" points.").color(ChatColor.YELLOW);
+
+            if (iterator.hasNext()) {
+                playerScoreMessage.append("\n");
+            }
         }
 
-        return scores.get(playerName);
+        return playerScoreMessage.create();
     }
 }
