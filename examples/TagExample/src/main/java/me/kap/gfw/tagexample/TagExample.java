@@ -23,6 +23,6 @@ public final class TagExample extends JavaPlugin {
         getCommand("end").setExecutor(new EndGameCommand(game));
 
         var arenaComponent = game.getComponentManager().getComponent(ArenaComponent.class);
-        getCommand("setLocation").setExecutor(new SetLocationCommand(arenaComponent.getArena()));
+        getCommand("setLocation").setExecutor(new SetLocationCommand(arenaComponent));
     }
 }
