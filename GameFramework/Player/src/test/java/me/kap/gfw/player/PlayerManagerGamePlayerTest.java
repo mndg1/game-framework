@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -75,5 +76,34 @@ class PlayerManagerGamePlayerTest {
 
         // assert
         assertNull(playerManager.getPlayer(playerId));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void whenAddPlayer_withCallback_thenCallbackIsExecuted() {
+        // arrange
+        var callbackMock = (Consumer<GamePlayer>) mock(Consumer.class);
+        playerManager.addPlayerAddCallback(callbackMock);
+
+        // act
+        playerManager.addNewPlayer(bukkitPlayerFake);
+
+        // assert
+        verify(callbackMock).accept(any(GamePlayer.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void whenRemovePlayer_withCallback_thenCallbackIsExecuted() {
+        // arrange
+        var callbackMock = (Consumer<GamePlayer>) mock(Consumer.class);
+        playerManager.addNewPlayer(bukkitPlayerFake);
+        playerManager.addPlayerRemoveCallback(callbackMock);
+
+        // act
+        playerManager.removePlayer(playerId);
+
+        // assert
+        verify(callbackMock).accept(any(GamePlayer.class));
     }
 }
