@@ -25,6 +25,11 @@ public class TagHandlerComponent extends GameComponent {
         playerManager.getAllPlayers().forEach(player -> player.setInvulnerable(false));
     }
 
+    @Override
+    public void end() {
+        tagEventSubscribers.clear();
+    }
+
     public void performTag(TagPlayer tagger, TagPlayer tagged) {
         // Only taggers can actually tag people.
         if (tagger.getRole() != Role.TAGGER) {
