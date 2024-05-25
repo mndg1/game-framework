@@ -2,6 +2,7 @@ package me.kap.gfw.tagexample.commands;
 
 import me.kap.gfw.game.exceptions.GameStateChangeException;
 import me.kap.gfw.tagexample.game.TagGame;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +20,7 @@ public class StartGameCommand implements CommandExecutor {
         try {
             game.start();
         } catch (GameStateChangeException stateChangeException) {
-            commandSender.sendMessage(stateChangeException.getMessage());
+            commandSender.sendMessage(ChatColor.RED + stateChangeException.getMessage());
         }
 
         return true;
