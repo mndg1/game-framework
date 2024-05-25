@@ -22,7 +22,7 @@ public class TagHandlerComponent extends GameComponent {
 
     @Override
     public void start() {
-        playerManager.getAllPlayers().forEach(player -> player.setImmunity(false));
+        playerManager.getAllPlayers().forEach(player -> player.setHasImmunity(false));
     }
 
     public void performTag(TagPlayer tagger, TagPlayer tagged) {

@@ -12,7 +12,7 @@ public class TagPlayerFactory implements PlayerFactory<TagPlayer> {
         var tagPlayer = new TagPlayer(player);
 
         tagPlayer.setRole(Role.UNASSIGNED);
-        tagPlayer.setImmunity(false);
+        tagPlayer.setHasImmunity(false);
 
         return tagPlayer;
     }
