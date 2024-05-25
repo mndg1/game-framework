@@ -6,11 +6,13 @@ import org.bukkit.entity.Player;
 public class TagPlayerFactory implements PlayerFactory<TagPlayer> {
 
     // This implementation of the PlayerFactory interface creates a new TagPlayer
-    // and ensures that their role is 'unassigned'.
+    // and ensures that they are vulnerable and their role is 'unassigned'.
     @Override
     public TagPlayer createPlayer(Player player) {
         var tagPlayer = new TagPlayer(player);
+
         tagPlayer.setRole(Role.UNASSIGNED);
+        tagPlayer.setInvulnerable(false);
 
         return tagPlayer;
     }

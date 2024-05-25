@@ -4,7 +4,6 @@ import me.kap.gfw.game.GameComponent;
 import me.kap.gfw.player.PlayerManager;
 import me.kap.gfw.tagexample.game.OnTag;
 import me.kap.gfw.tagexample.player.Role;
-import me.kap.gfw.tagexample.player.State;
 import me.kap.gfw.tagexample.player.TagPlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -23,7 +22,7 @@ public class TagHandlerComponent extends GameComponent {
 
     @Override
     public void start() {
-        playerManager.getAllPlayers().forEach(player -> player.setState(State.VULNERABLE));
+        playerManager.getAllPlayers().forEach(player -> player.setInvulnerable(false));
     }
 
     public void performTag(TagPlayer tagger, TagPlayer tagged) {
