@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 public class TagPlayer extends GamePlayer {
     private Role role;
-    private boolean hasImmunity;
+    private boolean invulnerable;
 
     public TagPlayer(Player bukkitPlayer) {
         super(bukkitPlayer);
@@ -18,7 +18,7 @@ public class TagPlayer extends GamePlayer {
             // Taggers cannot be tagged.
             case TAGGER -> false;
             // Runners can only be tagged if they are vulnerable (have no immunity).
-            case RUNNER -> !hasImmunity;
+            case RUNNER -> !invulnerable;
         };
     }
 
@@ -30,11 +30,11 @@ public class TagPlayer extends GamePlayer {
         this.role = role;
     }
 
-    public boolean getHasImmunity() {
-        return hasImmunity;
+    public boolean getInvulnerable() {
+        return invulnerable;
     }
 
-    public void setHasImmunity(boolean hasImmunity) {
-        this.hasImmunity = hasImmunity;
+    public void setInvulnerable(boolean invulnerable) {
+        this.invulnerable = invulnerable;
     }
 }

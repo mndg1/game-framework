@@ -17,11 +17,11 @@ public class PlayerStateHelper {
 
     public static void applyImmunity(TagPlayer target, TimerComponent timerComponent, Duration duration, Collection<TagPlayer> players) {
         // Set target to be immune
-        target.setHasImmunity(true);
+        target.setInvulnerable(true);
 
         // Schedule the role to be updated back to vulnerable.
         timerComponent.getEventTimer().scheduleEvent(duration, () -> {
-            target.setHasImmunity(false);
+            target.setInvulnerable(false);
 
             // Broadcast a message when the player's immunity ended.
             players.forEach(player -> player.getBukkitPlayer().spigot().sendMessage(getImmunityEndedMessage(target)));
