@@ -45,6 +45,7 @@ public class EventTimer {
      */
     public void stopTimer() {
         timer.cancel();
+        scheduledEvents.clear();
     }
 
     /**
